@@ -105,6 +105,7 @@ PHPAPI void php_syslog(int priority, const char *format, ...) /* {{{ */
 #else
 PHPAPI void php_syslog(int priority, const char *format, ...) /* {{{ */
 {
+#ifndef WASM_WASI
 	zend_string *fbuf = NULL;
 	va_list args;
 
@@ -124,6 +125,7 @@ PHPAPI void php_syslog(int priority, const char *format, ...) /* {{{ */
 	php_syslog_str(priority, fbuf);
 
 	zend_string_release(fbuf);
+#endif // WASM_WASI
 }
 /* }}} */
 #endif

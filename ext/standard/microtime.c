@@ -126,6 +126,7 @@ PHP_FUNCTION(getrusage)
 	PHP_RUSAGE_PARA(ru_majflt);
 	PHP_RUSAGE_PARA(ru_maxrss);
 #elif !defined(_OSD_POSIX) && !defined(__HAIKU__)
+#ifndef WASM_WASI
 	PHP_RUSAGE_PARA(ru_oublock);
 	PHP_RUSAGE_PARA(ru_inblock);
 	PHP_RUSAGE_PARA(ru_msgsnd);
@@ -139,6 +140,7 @@ PHP_FUNCTION(getrusage)
 	PHP_RUSAGE_PARA(ru_nvcsw);
 	PHP_RUSAGE_PARA(ru_nivcsw);
 	PHP_RUSAGE_PARA(ru_nswap);
+#endif // WASM_WASI
 #endif /*_OSD_POSIX*/
 	PHP_RUSAGE_PARA(ru_utime.tv_usec);
 	PHP_RUSAGE_PARA(ru_utime.tv_sec);

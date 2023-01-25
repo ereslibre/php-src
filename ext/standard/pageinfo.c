@@ -61,8 +61,10 @@ PHPAPI void php_statpage(void)
 			BG(page_inode) = pstat->st_ino;
 			BG(page_mtime) = pstat->st_mtime;
 		} else { /* handler for situations where there is no source file, ex. php -r */
+#ifndef WASM_WASI
 			BG(page_uid) = getuid();
 			BG(page_gid) = getgid();
+#endif // WASM_WASI
 		}
 	}
 }
@@ -71,20 +73,29 @@ PHPAPI void php_statpage(void)
 /* {{{ php_getuid */
 zend_long php_getuid(void)
 {
+#ifndef WASM_WASI
 	php_statpage();
 	return (BG(page_uid));
+#else
+	return 0;
+#endif //WASM_WASI
 }
 /* }}} */
 
 zend_long php_getgid(void)
 {
+#ifndef WASM_WASI
 	php_statpage();
 	return (BG(page_gid));
+#else
+	return 0;
+#endif //WASM_WASI
 }
 
 /* {{{ Get PHP script owner's UID */
 PHP_FUNCTION(getmyuid)
 {
+#ifndef WASM_WASI
 	zend_long uid;
 
 	ZEND_PARSE_PARAMETERS_NONE();
@@ -95,6 +106,9 @@ PHP_FUNCTION(getmyuid)
 	} else {
 		RETURN_LONG(uid);
 	}
+#else
+	RETURN_LONG(0);
+#endif //WASM_WASI
 }
 /* }}} */
 

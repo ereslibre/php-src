@@ -199,6 +199,9 @@ label2:
 fi
 PHP_SUBST(RE2C_FLAGS)
 
+dnl Check if __wasi__ is defined by the compiler
+AC_CHECK_DECLS([__wasi__])
+
 dnl Platform-specific compile settings.
 dnl ----------------------------------------------------------------------------
 
@@ -1334,11 +1337,13 @@ else
   if test "$fiber_os" = 'mac'; then
     AC_DEFINE([_XOPEN_SOURCE], 1, [ ])
   fi
-  AC_CHECK_HEADER(ucontext.h, [
-    AC_DEFINE([ZEND_FIBER_UCONTEXT], 1, [ ])
-  ], [
-       AC_MSG_ERROR([fibers not available on this platform])
-  ])
+  if test "$ac_cv_have_decl___wasi__" != "yes"; then
+    AC_CHECK_HEADER(ucontext.h, [
+      AC_DEFINE([ZEND_FIBER_UCONTEXT], 1, [ ])
+    ], [
+        AC_MSG_ERROR([fibers not available on this platform])
+    ])
+  fi
 fi
 
 LIBZEND_BASIC_CHECKS
@@ -1738,6 +1743,12 @@ PHP_ADD_SOURCES(Zend, \
 	Optimizer/compact_vars.c \
 	Optimizer/zend_dump.c \
     , -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+
+PHP_WASM=yes
+if test "$PHP_WASM" = "yes"; then
+  PHP_ADD_SOURCES(polyfill_setjmp, setjmp.c setjmp_core.S, -DWASM_SETJMP)
+  CFLAGS="$CFLAGS -DWASM_SETJMP"
+fi
 
 PHP_ADD_BUILD_DIR(main main/streams)
 PHP_ADD_BUILD_DIR(TSRM)

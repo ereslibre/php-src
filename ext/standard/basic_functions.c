@@ -66,11 +66,13 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #include <sys/stat.h>
 #endif
 
+#ifndef WASM_WASI
 #ifndef PHP_WIN32
 # include <netdb.h>
 #else
 #include "win32/inet.h"
 #endif
+#endif // WASM_WASI
 
 #ifdef HAVE_ARPA_INET_H
 # include <arpa/inet.h>
@@ -450,9 +452,11 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 	tsrm_env_unlock();
 #endif
 
+#ifndef WASM_WASI
 	if (BG(umask) != -1) {
 		umask(BG(umask));
 	}
+#endif // WASM_WASI
 
 	/* Check if locale was changed and change it back
 	 * to the value in startup environment */
@@ -2405,6 +2409,7 @@ PHP_FUNCTION(move_uploaded_file)
 
 	if (VCWD_RENAME(path, new_path) == 0) {
 		successful = 1;
+#ifndef WASM_WASI
 #ifndef PHP_WIN32
 		oldmask = umask(077);
 		umask(oldmask);
@@ -2415,6 +2420,7 @@ PHP_FUNCTION(move_uploaded_file)
 			php_error_docref(NULL, E_WARNING, "%s", strerror(errno));
 		}
 #endif
+#endif // WASM_WASI
 	} else if (php_copy_file_ex(path, new_path, STREAM_DISABLE_OPEN_BASEDIR) == SUCCESS) {
 		VCWD_UNLINK(path);
 		successful = 1;

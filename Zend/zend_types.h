@@ -1453,5 +1453,15 @@ static zend_always_inline uint32_t zval_delref_p(zval* pz) {
 #define ZVAL_COPY_OR_DUP_PROP(z, v) \
 	do { ZVAL_COPY_OR_DUP(z, v); Z_PROP_FLAG_P(z) = Z_PROP_FLAG_P(v); } while (0)
 
+#ifdef WASM_WASI
+#define	LOG_EMERG	0	/* system is unusable */
+#define	LOG_ALERT	1	/* action must be taken immediately */
+#define	LOG_CRIT	2	/* critical conditions */
+#define	LOG_ERR		3	/* error conditions */
+#define	LOG_WARNING	4	/* warning conditions */
+#define	LOG_NOTICE	5	/* normal but significant condition */
+#define	LOG_INFO	6	/* informational */
+#define	LOG_DEBUG	7	/* debug-level messages */
+#endif // WASM_WASI
 
 #endif /* ZEND_TYPES_H */

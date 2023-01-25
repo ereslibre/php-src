@@ -39,7 +39,7 @@
 # include <ucontext.h>
 #endif
 
-#ifndef ZEND_WIN32
+#if !defined(ZEND_WIN32) && HAVE_MMAP
 # include <unistd.h>
 # include <sys/mman.h>
 # include <limits.h>
@@ -108,7 +108,9 @@ typedef struct _zend_fiber_vm_state {
 	zend_execute_data *current_execute_data;
 	int error_reporting;
 	uint32_t jit_trace_num;
+#ifndef WASM_WASI
 	JMP_BUF *bailout;
+#endif // WASM_WASI
 	zend_fiber *active_fiber;
 #ifdef ZEND_CHECK_STACK_LIMIT
 	void *stack_base;
@@ -125,7 +127,9 @@ static zend_always_inline void zend_fiber_capture_vm_state(zend_fiber_vm_state *
 	state->current_execute_data = EG(current_execute_data);
 	state->error_reporting = EG(error_reporting);
 	state->jit_trace_num = EG(jit_trace_num);
+#ifndef WASM_WASI
 	state->bailout = EG(bailout);
+#endif // WASM_WASI
 	state->active_fiber = EG(active_fiber);
 #ifdef ZEND_CHECK_STACK_LIMIT
 	state->stack_base = EG(stack_base);
@@ -142,7 +146,9 @@ static zend_always_inline void zend_fiber_restore_vm_state(zend_fiber_vm_state *
 	EG(current_execute_data) = state->current_execute_data;
 	EG(error_reporting) = state->error_reporting;
 	EG(jit_trace_num) = state->jit_trace_num;
+#ifndef WASM_WASI
 	EG(bailout) = state->bailout;
+#endif // WASM_WASI
 	EG(active_fiber) = state->active_fiber;
 #ifdef ZEND_CHECK_STACK_LIMIT
 	EG(stack_base) = state->stack_base;
@@ -236,6 +242,8 @@ static zend_fiber_stack *zend_fiber_stack_allocate(size_t size)
 		return NULL;
 	}
 # endif
+#elif defined(WASM_WASI)
+	pointer = malloc(alloc_size);
 #else
 	pointer = mmap(NULL, alloc_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
 
@@ -302,6 +310,8 @@ static void zend_fiber_stack_free(zend_fiber_stack *stack)
 
 #ifdef ZEND_WIN32
 	VirtualFree(pointer, 0, MEM_RELEASE);
+#elif defined(WASM_WASI)
+	free(pointer);
 #else
 	munmap(pointer, stack->size + ZEND_FIBER_GUARD_PAGES * page_size);
 #endif
@@ -415,7 +425,7 @@ ZEND_API bool zend_fiber_init_context(zend_fiber_context *context, void *kind, z
 	makecontext(handle, (void (*)(void)) zend_fiber_trampoline, 0);
 
 	context->handle = handle;
-#else
+#elif !defined(__wasi__)
 	// Stack grows down, calculate the top of the stack. make_fcontext then shifts pointer to lower 16-byte boundary.
 	void *stack = (void *) ((uintptr_t) context->stack->pointer + context->stack->size);
 
@@ -428,6 +438,8 @@ ZEND_API bool zend_fiber_init_context(zend_fiber_context *context, void *kind, z
 
 	context->handle = make_fcontext(stack, context->stack->size, zend_fiber_trampoline);
 	ZEND_ASSERT(context->handle != NULL && "make_fcontext() never returns NULL");
+#else
+	return false;
 #endif
 
 	context->kind = kind;
@@ -502,16 +514,18 @@ ZEND_API void zend_fiber_switch_context(zend_fiber_transfer *transfer)
 
 	/* Copy transfer struct because it might live on the other fiber's stack that will eventually be destroyed. */
 	*transfer = *transfer_data;
-#else
+#elif !defined(__wasi__)
 	boost_context_data data = jump_fcontext(to->handle, transfer);
 
 	/* Copy transfer struct because it might live on the other fiber's stack that will eventually be destroyed. */
 	*transfer = *data.transfer;
+#else
+	return;
 #endif
 
 	to = transfer->context;
 
-#ifndef ZEND_FIBER_UCONTEXT
+#if !defined(ZEND_FIBER_UCONTEXT) && !defined(__wasi__)
 	/* Get the context that resumed us and update its handle to allow for symmetric coroutines. */
 	to->handle = data.handle;
 #endif

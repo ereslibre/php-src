@@ -9,7 +9,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+#ifdef HAVE_GRP_H
 #include <grp.h>
+#endif
 
 #ifdef HAVE_PRCTL
 #include <sys/prctl.h>

@@ -65,7 +65,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <sys/time.h>
 #include <sys/uio.h>
 #include <sys/wait.h>
+#ifdef HAVE_GRP_H
 #include <grp.h>
+#endif
 #include <pwd.h>
 #include <time.h>
 #include <unistd.h>

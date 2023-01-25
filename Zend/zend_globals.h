@@ -21,7 +21,9 @@
 #define ZEND_GLOBALS_H
 
 
+#ifndef WASM_WASI
 #include <setjmp.h>
+#endif
 
 #include "zend_globals_macros.h"
 
@@ -162,7 +164,9 @@ struct _zend_executor_globals {
 
 	HashTable included_files;	/* files already included */
 
+#ifndef WASM_WASI
 	JMP_BUF *bailout;
+#endif
 
 	int error_reporting;
 	int exit_status;
