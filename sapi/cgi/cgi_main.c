@@ -44,9 +44,10 @@
 # include <unistd.h>
 #endif
 
-#ifndef WASM_WASI
-#include <signal.h>
-#endif // WASM_WASI
+#ifdef WASM_SETJMP
+#include "polyfill_setjmp/setjmp.h"
+#include "polyfill_setjmp/asyncify.h"
+#endif
 
 #include <locale.h>
 
@@ -1718,7 +1719,32 @@ static zend_module_entry cgi_module_entry = {
 };
 
 /* {{{ main */
+#ifdef WASM_SETJMP
+int main_without_setjmp(int argc, char *argv[]);
 int main(int argc, char *argv[])
+{
+	int result;
+	void *asyncify_buf;
+
+	while (1) {
+		result = main_without_setjmp(argc, argv);
+		asyncify_stop_unwind();
+
+		if ((asyncify_buf = php_wasm_handle_jmp_unwind()) != NULL) {
+			asyncify_start_rewind(asyncify_buf);
+			continue;
+		}
+
+		break;
+	}
+
+	return result;
+}
+
+int main_without_setjmp(int argc, char *argv[])
+#else // WASM_SETJMP
+ int main(int argc, char *argv[])
+#endif // WASM_SETJMP
 {
 	int free_query_string = 0;
 	int exit_status = SUCCESS;
