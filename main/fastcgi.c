@@ -69,7 +69,9 @@ static int is_impersonate = 0;
 # include <netinet/in.h>
 # include <netinet/tcp.h>
 # include <arpa/inet.h>
+# ifndef __wasi__
 # include <netdb.h>
+# endif // __wasi__
 # include <signal.h>
 
 # if defined(HAVE_POLL_H) && defined(HAVE_POLL)
@@ -431,6 +433,7 @@ static void fcgi_signal_handler(int signo)
 
 static void fcgi_setup_signals(void)
 {
+#ifndef __wasi__
 	struct sigaction new_sa, old_sa;
 
 	sigemptyset(&new_sa.sa_mask);
@@ -442,6 +445,7 @@ static void fcgi_setup_signals(void)
 	if (old_sa.sa_handler == SIG_DFL) {
 		sigaction(SIGPIPE, &new_sa, NULL);
 	}
+#endif // __wasi__
 }
 #endif
 
@@ -526,6 +530,8 @@ int fcgi_init(void)
 		} else {
 			return is_fastcgi = 0;
 		}
+#elif defined(__wasi__)
+		return is_fastcgi = 0;
 #else
 		errno = 0;
 		if (getpeername(0, (struct sockaddr *)&sa, &len) != 0 && errno == ENOTCONN) {
@@ -641,6 +647,7 @@ static int is_port_number(const char *bindpath)
 	return 1;
 }
 
+#ifndef __wasi__
 int fcgi_listen(const char *path, int backlog)
 {
 	char     *s;
@@ -824,6 +831,12 @@ int fcgi_listen(const char *path, int backlog)
 #endif
 	return listen_socket;
 }
+#else // __wasi__
+int fcgi_listen(const char *path, int backlog)
+{
+  return -1;
+}
+#endif // __wasi__
 
 void fcgi_set_allowed_clients(char *ip)
 {
@@ -1040,6 +1053,7 @@ static int fcgi_get_params(fcgi_request *req, unsigned char *p, unsigned char *e
 	return 1;
 }
 
+#ifndef __wasi__
 static int fcgi_read_request(fcgi_request *req)
 {
 	fcgi_header hdr;
@@ -1209,6 +1223,12 @@ static int fcgi_read_request(fcgi_request *req)
 
 	return 1;
 }
+#else // __wasi__
+static int fcgi_read_request(fcgi_request *req)
+{
+  return 0;
+}
+#endif // __wasi__
 
 int fcgi_read(fcgi_request *req, char *str, int len)
 {

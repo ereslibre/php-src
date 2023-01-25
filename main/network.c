@@ -54,7 +54,9 @@
 
 #ifndef PHP_WIN32
 #include <netinet/in.h>
+#ifndef __wasi__
 #include <netdb.h>
+#endif // __wasi__
 #if HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
@@ -151,6 +153,7 @@ PHPAPI void php_network_freeaddresses(struct sockaddr **sal)
 /* {{{ php_network_getaddresses
  * Returns number of addresses, 0 for none/error
  */
+#ifndef __wasi__
 PHPAPI int php_network_getaddresses(const char *host, int socktype, struct sockaddr ***sal, zend_string **error_string)
 {
 	struct sockaddr **sap;
@@ -276,6 +279,7 @@ PHPAPI int php_network_getaddresses(const char *host, int socktype, struct socka
 	*sap = NULL;
 	return n;
 }
+#endif // __wasi__
 /* }}} */
 
 #ifndef O_NONBLOCK
@@ -302,6 +306,7 @@ typedef int php_non_blocking_flags_t;
  * enable non-blocking mode on the socket.
  * */
 /* {{{ php_network_connect_socket */
+#ifndef __wasi__
 PHPAPI int php_network_connect_socket(php_socket_t sockfd,
 		const struct sockaddr *addr,
 		socklen_t addrlen,
@@ -388,6 +393,7 @@ ok:
 	}
 	return ret;
 }
+#endif // __wasi__
 /* }}} */
 
 /* {{{ sub_times */
@@ -410,6 +416,7 @@ static inline void sub_times(struct timeval a, struct timeval b, struct timeval 
  * Returns the bound socket, or -1 on failure.
  * */
 /* {{{ php_network_bind_socket_to_local_addr */
+#ifndef __wasi__
 php_socket_t php_network_bind_socket_to_local_addr(const char *host, unsigned port,
 		int socktype, long sockopts, zend_string **error_string, int *error_code
 		)
@@ -506,8 +513,10 @@ bound:
 	return sock;
 
 }
+#endif // __wasi__
 /* }}} */
 
+#ifndef __wasi__
 PHPAPI int php_network_parse_network_address_with_port(const char *addr, zend_long addrlen, struct sockaddr *sa, socklen_t *sl)
 {
 	char *colon;
@@ -601,8 +610,9 @@ out:
 	efree(tmp);
 	return ret;
 }
+#endif // __wasi__
 
-
+#ifndef __wasi__
 PHPAPI void php_network_populate_name_from_sockaddr(
 		/* input address */
 		struct sockaddr *sa, socklen_t sl,
@@ -671,7 +681,9 @@ PHPAPI void php_network_populate_name_from_sockaddr(
 
 	}
 }
+#endif // __wasi__
 
+#ifndef __wasi__
 PHPAPI int php_network_get_peer_name(php_socket_t sock,
 		zend_string **textaddr,
 		struct sockaddr **addr,
@@ -691,7 +703,9 @@ PHPAPI int php_network_get_peer_name(php_socket_t sock,
 	}
 	return -1;
 }
+#endif // __wasi__
 
+#ifndef __wasi__
 PHPAPI int php_network_get_sock_name(php_socket_t sock,
 		zend_string **textaddr,
 		struct sockaddr **addr,
@@ -710,8 +724,8 @@ PHPAPI int php_network_get_sock_name(php_socket_t sock,
 		return 0;
 	}
 	return -1;
-
 }
+#endif // __wasi__
 
 
 /* Accept a client connection from a server socket,
@@ -723,6 +737,7 @@ PHPAPI int php_network_get_sock_name(php_socket_t sock,
  * */
 
 /* {{{ php_network_accept_incoming */
+#ifndef __wasi__
 PHPAPI php_socket_t php_network_accept_incoming(php_socket_t srvsock,
 		zend_string **textaddr,
 		struct sockaddr **addr,
@@ -773,6 +788,7 @@ PHPAPI php_socket_t php_network_accept_incoming(php_socket_t srvsock,
 
 	return clisock;
 }
+#endif // __wasi__
 /* }}} */
 
 
@@ -783,6 +799,7 @@ PHPAPI php_socket_t php_network_accept_incoming(php_socket_t srvsock,
  * */
 
 /* {{{ php_network_connect_socket_to_host */
+#ifndef __wasi__
 php_socket_t php_network_connect_socket_to_host(const char *host, unsigned short port,
 		int socktype, int asynchronous, struct timeval *timeout, zend_string **error_string,
 		int *error_code, const char *bindto, unsigned short bindport, long sockopts
@@ -966,6 +983,7 @@ connected:
 
 	return sock;
 }
+#endif // __wasi__
 /* }}} */
 
 /* {{{ php_any_addr
@@ -1328,6 +1346,7 @@ struct hostent * gethostname_re (const char *host,struct hostent *hostbuf,char *
 #endif
 #endif
 
+#ifndef __wasi__
 PHPAPI struct hostent*	php_network_gethostbyname(const char *name) {
 #if !defined(HAVE_GETHOSTBYNAME_R)
 	return gethostbyname(name);
@@ -1344,3 +1363,4 @@ PHPAPI struct hostent*	php_network_gethostbyname(const char *name) {
 	return gethostname_re(name, &FG(tmp_host_info), &FG(tmp_host_buf), &FG(tmp_host_buf_len));
 #endif
 }
+#endif // __wasi__

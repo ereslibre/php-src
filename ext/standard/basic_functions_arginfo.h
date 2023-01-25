@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 9cc9c0954bd7032d363ce9a531be621274b9a7e2 */
+ * Stub hash: 7763da007bf30a405fc7fa16588649317ce7bb20 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, seconds, IS_LONG, 0)
@@ -686,9 +686,14 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_md5_file, 0, 1, MAY_BE_STRING|MA
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, binary, _IS_BOOL, 0, "false")
 ZEND_END_ARG_INFO()
 
-#define arginfo_getmyuid arginfo_ob_get_length
+#if !defined(__wasi__)
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_getmyuid, 0, 0, MAY_BE_LONG|MAY_BE_FALSE)
+ZEND_END_ARG_INFO()
+#endif
 
-#define arginfo_getmygid arginfo_ob_get_length
+#if !defined(__wasi__)
+#define arginfo_getmygid arginfo_getmyuid
+#endif
 
 #define arginfo_getmypid arginfo_ob_get_length
 
@@ -1406,15 +1411,19 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_lstat arginfo_stat
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_chown, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)
 	ZEND_ARG_TYPE_MASK(0, user, MAY_BE_STRING|MAY_BE_LONG, NULL)
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_chgrp, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)
 	ZEND_ARG_TYPE_MASK(0, group, MAY_BE_STRING|MAY_BE_LONG, NULL)
 ZEND_END_ARG_INFO()
+#endif
 
 #if defined(HAVE_LCHOWN)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_lchown, 0, 2, _IS_BOOL, 0)
@@ -1430,10 +1439,12 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_lchgrp, 0, 2, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 #endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_chmod, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, permissions, IS_LONG, 0)
 ZEND_END_ARG_INFO()
+#endif
 
 #if defined(HAVE_UTIME)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_touch, 0, 1, _IS_BOOL, 0)
@@ -1591,6 +1602,7 @@ ZEND_END_ARG_INFO()
 #define arginfo_link arginfo_symlink
 #endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_mail, 0, 3, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, to, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, subject, IS_STRING, 0)
@@ -1598,6 +1610,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_mail, 0, 3, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_MASK(0, additional_headers, MAY_BE_ARRAY|MAY_BE_STRING, "[]")
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, additional_params, IS_STRING, 0, "\"\"")
 ZEND_END_ARG_INFO()
+#endif
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_abs, 0, 1, MAY_BE_LONG|MAY_BE_DOUBLE)
 	ZEND_ARG_TYPE_MASK(0, num, MAY_BE_LONG|MAY_BE_DOUBLE, NULL)
@@ -1870,6 +1883,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_stream_filter_remove, 0, 1, _IS_
 	ZEND_ARG_INFO(0, stream_filter)
 ZEND_END_ARG_INFO()
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_client, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO(0, address, IS_STRING, 0)
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, error_code, "null")
@@ -1878,7 +1892,9 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_client, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, "STREAM_CLIENT_CONNECT")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(0, context, "null")
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_server, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO(0, address, IS_STRING, 0)
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, error_code, "null")
@@ -1886,47 +1902,58 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_server, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, "STREAM_SERVER_BIND | STREAM_SERVER_LISTEN")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(0, context, "null")
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_accept, 0, 0, 1)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, timeout, IS_DOUBLE, 1, "null")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, peer_name, "null")
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_get_name, 0, 2, MAY_BE_STRING|MAY_BE_FALSE)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO(0, remote, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_recvfrom, 0, 2, MAY_BE_STRING|MAY_BE_FALSE)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO(0, length, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, "0")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, address, "null")
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_sendto, 0, 2, MAY_BE_LONG|MAY_BE_FALSE)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, "0")
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, address, IS_STRING, 0, "\"\"")
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_enable_crypto, 0, 2, MAY_BE_LONG|MAY_BE_BOOL)
 	ZEND_ARG_INFO(0, stream)
 	ZEND_ARG_TYPE_INFO(0, enable, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, crypto_method, IS_LONG, 1, "null")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(0, session_stream, "null")
 ZEND_END_ARG_INFO()
+#endif
 
-#if defined(HAVE_SHUTDOWN)
+#if !defined(__wasi__) && defined(HAVE_SHUTDOWN)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_stream_socket_shutdown, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_INFO(0, stream)
 	ZEND_ARG_TYPE_INFO(0, mode, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 #endif
 
-#if defined(HAVE_SOCKETPAIR)
+#if !defined(__wasi__) && defined(HAVE_SOCKETPAIR)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_pair, 0, 3, MAY_BE_ARRAY|MAY_BE_FALSE)
 	ZEND_ARG_TYPE_INFO(0, domain, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, type, IS_LONG, 0)
@@ -2393,8 +2420,12 @@ ZEND_FUNCTION(ftok);
 ZEND_FUNCTION(hrtime);
 ZEND_FUNCTION(md5);
 ZEND_FUNCTION(md5_file);
+#if !defined(__wasi__)
 ZEND_FUNCTION(getmyuid);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(getmygid);
+#endif
 ZEND_FUNCTION(getmypid);
 ZEND_FUNCTION(getmyinode);
 ZEND_FUNCTION(getlastmod);
@@ -2581,15 +2612,21 @@ ZEND_FUNCTION(is_dir);
 ZEND_FUNCTION(is_link);
 ZEND_FUNCTION(stat);
 ZEND_FUNCTION(lstat);
+#if !defined(__wasi__)
 ZEND_FUNCTION(chown);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(chgrp);
+#endif
 #if defined(HAVE_LCHOWN)
 ZEND_FUNCTION(lchown);
 #endif
 #if defined(HAVE_LCHOWN)
 ZEND_FUNCTION(lchgrp);
 #endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(chmod);
+#endif
 #if defined(HAVE_UTIME)
 ZEND_FUNCTION(touch);
 #endif
@@ -2633,7 +2670,9 @@ ZEND_FUNCTION(symlink);
 #if (defined(HAVE_SYMLINK) || defined(PHP_WIN32))
 ZEND_FUNCTION(link);
 #endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(mail);
+#endif
 ZEND_FUNCTION(abs);
 ZEND_FUNCTION(ceil);
 ZEND_FUNCTION(floor);
@@ -2718,17 +2757,31 @@ ZEND_FUNCTION(stream_context_set_default);
 ZEND_FUNCTION(stream_filter_prepend);
 ZEND_FUNCTION(stream_filter_append);
 ZEND_FUNCTION(stream_filter_remove);
+#if !defined(__wasi__)
 ZEND_FUNCTION(stream_socket_client);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(stream_socket_server);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(stream_socket_accept);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(stream_socket_get_name);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(stream_socket_recvfrom);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(stream_socket_sendto);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(stream_socket_enable_crypto);
-#if defined(HAVE_SHUTDOWN)
+#endif
+#if !defined(__wasi__) && defined(HAVE_SHUTDOWN)
 ZEND_FUNCTION(stream_socket_shutdown);
 #endif
-#if defined(HAVE_SOCKETPAIR)
+#if !defined(__wasi__) && defined(HAVE_SOCKETPAIR)
 ZEND_FUNCTION(stream_socket_pair);
 #endif
 ZEND_FUNCTION(stream_copy_to_stream);
@@ -3025,8 +3078,12 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(hrtime, arginfo_hrtime)
 	ZEND_FE(md5, arginfo_md5)
 	ZEND_FE(md5_file, arginfo_md5_file)
+#if !defined(__wasi__)
 	ZEND_FE(getmyuid, arginfo_getmyuid)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(getmygid, arginfo_getmygid)
+#endif
 	ZEND_FE(getmypid, arginfo_getmypid)
 	ZEND_FE(getmyinode, arginfo_getmyinode)
 	ZEND_FE(getlastmod, arginfo_getlastmod)
@@ -3218,15 +3275,21 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(is_link, arginfo_is_link)
 	ZEND_FE(stat, arginfo_stat)
 	ZEND_FE(lstat, arginfo_lstat)
+#if !defined(__wasi__)
 	ZEND_FE(chown, arginfo_chown)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(chgrp, arginfo_chgrp)
+#endif
 #if defined(HAVE_LCHOWN)
 	ZEND_FE(lchown, arginfo_lchown)
 #endif
 #if defined(HAVE_LCHOWN)
 	ZEND_FE(lchgrp, arginfo_lchgrp)
 #endif
+#if !defined(__wasi__)
 	ZEND_FE(chmod, arginfo_chmod)
+#endif
 #if defined(HAVE_UTIME)
 	ZEND_FE(touch, arginfo_touch)
 #endif
@@ -3271,7 +3334,9 @@ static const zend_function_entry ext_functions[] = {
 #if (defined(HAVE_SYMLINK) || defined(PHP_WIN32))
 	ZEND_FE(link, arginfo_link)
 #endif
+#if !defined(__wasi__)
 	ZEND_FE(mail, arginfo_mail)
+#endif
 	ZEND_SUPPORTS_COMPILE_TIME_EVAL_FE(abs, arginfo_abs)
 	ZEND_SUPPORTS_COMPILE_TIME_EVAL_FE(ceil, arginfo_ceil)
 	ZEND_SUPPORTS_COMPILE_TIME_EVAL_FE(floor, arginfo_floor)
@@ -3356,17 +3421,31 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(stream_filter_prepend, arginfo_stream_filter_prepend)
 	ZEND_FE(stream_filter_append, arginfo_stream_filter_append)
 	ZEND_FE(stream_filter_remove, arginfo_stream_filter_remove)
+#if !defined(__wasi__)
 	ZEND_FE(stream_socket_client, arginfo_stream_socket_client)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(stream_socket_server, arginfo_stream_socket_server)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(stream_socket_accept, arginfo_stream_socket_accept)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(stream_socket_get_name, arginfo_stream_socket_get_name)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(stream_socket_recvfrom, arginfo_stream_socket_recvfrom)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(stream_socket_sendto, arginfo_stream_socket_sendto)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(stream_socket_enable_crypto, arginfo_stream_socket_enable_crypto)
-#if defined(HAVE_SHUTDOWN)
+#endif
+#if !defined(__wasi__) && defined(HAVE_SHUTDOWN)
 	ZEND_FE(stream_socket_shutdown, arginfo_stream_socket_shutdown)
 #endif
-#if defined(HAVE_SOCKETPAIR)
+#if !defined(__wasi__) && defined(HAVE_SOCKETPAIR)
 	ZEND_FE(stream_socket_pair, arginfo_stream_socket_pair)
 #endif
 	ZEND_FE(stream_copy_to_stream, arginfo_stream_copy_to_stream)
@@ -3669,65 +3748,103 @@ static void register_basic_functions_symbols(int module_number)
 	REGISTER_LONG_CONSTANT("CREDITS_FULLPAGE", PHP_CREDITS_FULLPAGE, CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("CREDITS_QA", PHP_CREDITS_QA, CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("CREDITS_ALL", PHP_CREDITS_ALL, CONST_PERSISTENT);
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_EMERG", LOG_EMERG, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_ALERT", LOG_ALERT, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_CRIT", LOG_CRIT, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_ERR", LOG_ERR, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_WARNING", LOG_WARNING, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_NOTICE", LOG_NOTICE, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_INFO", LOG_INFO, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_DEBUG", LOG_DEBUG, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_KERN", LOG_KERN, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_USER", LOG_USER, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_MAIL", LOG_MAIL, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_DAEMON", LOG_DAEMON, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_AUTH", LOG_AUTH, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_SYSLOG", LOG_SYSLOG, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_LPR", LOG_LPR, CONST_PERSISTENT);
-#if defined(LOG_NEWS)
+#endif
+#if !defined(__wasi__) && defined(LOG_NEWS)
 	REGISTER_LONG_CONSTANT("LOG_NEWS", LOG_NEWS, CONST_PERSISTENT);
 #endif
-#if defined(LOG_UUCP)
+#if !defined(__wasi__) && defined(LOG_UUCP)
 	REGISTER_LONG_CONSTANT("LOG_UUCP", LOG_UUCP, CONST_PERSISTENT);
 #endif
-#if defined(LOG_CRON)
+#if !defined(__wasi__) && defined(LOG_CRON)
 	REGISTER_LONG_CONSTANT("LOG_CRON", LOG_CRON, CONST_PERSISTENT);
 #endif
-#if defined(LOG_AUTHPRIV)
+#if !defined(__wasi__) && defined(LOG_AUTHPRIV)
 	REGISTER_LONG_CONSTANT("LOG_AUTHPRIV", LOG_AUTHPRIV, CONST_PERSISTENT);
 #endif
-#if !defined(PHP_WIN32)
+#if !defined(__wasi__) && !defined(PHP_WIN32)
 	REGISTER_LONG_CONSTANT("LOG_LOCAL0", LOG_LOCAL0, CONST_PERSISTENT);
 #endif
-#if !defined(PHP_WIN32)
+#if !defined(__wasi__) && !defined(PHP_WIN32)
 	REGISTER_LONG_CONSTANT("LOG_LOCAL1", LOG_LOCAL1, CONST_PERSISTENT);
 #endif
-#if !defined(PHP_WIN32)
+#if !defined(__wasi__) && !defined(PHP_WIN32)
 	REGISTER_LONG_CONSTANT("LOG_LOCAL2", LOG_LOCAL2, CONST_PERSISTENT);
 #endif
-#if !defined(PHP_WIN32)
+#if !defined(__wasi__) && !defined(PHP_WIN32)
 	REGISTER_LONG_CONSTANT("LOG_LOCAL3", LOG_LOCAL3, CONST_PERSISTENT);
 #endif
-#if !defined(PHP_WIN32)
+#if !defined(__wasi__) && !defined(PHP_WIN32)
 	REGISTER_LONG_CONSTANT("LOG_LOCAL4", LOG_LOCAL4, CONST_PERSISTENT);
 #endif
-#if !defined(PHP_WIN32)
+#if !defined(__wasi__) && !defined(PHP_WIN32)
 	REGISTER_LONG_CONSTANT("LOG_LOCAL5", LOG_LOCAL5, CONST_PERSISTENT);
 #endif
-#if !defined(PHP_WIN32)
+#if !defined(__wasi__) && !defined(PHP_WIN32)
 	REGISTER_LONG_CONSTANT("LOG_LOCAL6", LOG_LOCAL6, CONST_PERSISTENT);
 #endif
-#if !defined(PHP_WIN32)
+#if !defined(__wasi__) && !defined(PHP_WIN32)
 	REGISTER_LONG_CONSTANT("LOG_LOCAL7", LOG_LOCAL7, CONST_PERSISTENT);
 #endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_PID", LOG_PID, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_CONS", LOG_CONS, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_ODELAY", LOG_ODELAY, CONST_PERSISTENT);
+#endif
+#if !defined(__wasi__)
 	REGISTER_LONG_CONSTANT("LOG_NDELAY", LOG_NDELAY, CONST_PERSISTENT);
-#if defined(LOG_NOWAIT)
+#endif
+#if !defined(__wasi__) && defined(LOG_NOWAIT)
 	REGISTER_LONG_CONSTANT("LOG_NOWAIT", LOG_NOWAIT, CONST_PERSISTENT);
 #endif
-#if defined(LOG_PERROR)
+#if !defined(__wasi__) && defined(LOG_PERROR)
 	REGISTER_LONG_CONSTANT("LOG_PERROR", LOG_PERROR, CONST_PERSISTENT);
 #endif
 	REGISTER_LONG_CONSTANT("STR_PAD_LEFT", PHP_STR_PAD_LEFT, CONST_PERSISTENT);

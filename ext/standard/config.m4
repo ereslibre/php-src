@@ -451,14 +451,20 @@ PHP_NEW_EXTENSION(standard, array.c base64.c basic_functions.c browscap.c crc32.
                             microtime.c pack.c pageinfo.c quot_print.c \
                             soundex.c string.c scanf.c syslog.c type.c uniqid.c url.c \
                             var.c versioning.c assert.c strnatcmp.c levenshtein.c \
-                            incomplete_class.c url_scanner_ex.c ftp_fopen_wrapper.c \
-                            http_fopen_wrapper.c php_fopen_wrapper.c credits.c css.c \
+                            incomplete_class.c url_scanner_ex.c credits.c css.c \
                             var_unserializer.c ftok.c sha1.c user_filters.c uuencode.c \
-                            filters.c proc_open.c streamsfuncs.c http.c password.c \
-                            net.c hrtime.c crc32_x86.c libavifinfo/avifinfo.c,,,
+                            filters.c php_fopen_wrapper.c proc_open.c streamsfuncs.c http.c \
+                            password.c net.c hrtime.c crc32_x86.c libavifinfo/avifinfo.c \
+                            $stdlib_extra_sources,,,
 			    -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 
 PHP_ADD_BUILD_DIR($ext_builddir/libavifinfo)
+
+if test "$WASI" = "yes"; then
+   PHP_ADD_SOURCES(ext/standard/wasi, dns.c exec.c file.c flock_compat.c,)
+else
+   PHP_ADD_SOURCES(ext/standard, ftp_fopen_wrapper.c http_fopen_wrapper.c,)
+fi
 
 PHP_ADD_MAKEFILE_FRAGMENT
 PHP_INSTALL_HEADERS([ext/standard/])

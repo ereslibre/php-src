@@ -47,7 +47,7 @@
 #define php_stream_fopen_from_file_int(file, mode)	_php_stream_fopen_from_file_int((file), (mode) STREAMS_CC)
 #define php_stream_fopen_from_file_int_rel(file, mode)	 _php_stream_fopen_from_file_int((file), (mode) STREAMS_REL_CC)
 
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 extern int php_get_uid_by_name(const char *name, uid_t *uid);
 extern int php_get_gid_by_name(const char *name, gid_t *gid);
 #endif
@@ -491,6 +491,7 @@ static int php_stdiop_close(php_stream *stream, int close_handle)
 
 	if (close_handle) {
 		if (data->file) {
+#ifndef __wasi__
 			if (data->is_process_pipe) {
 				errno = 0;
 				ret = pclose(data->file);
@@ -504,6 +505,10 @@ static int php_stdiop_close(php_stream *stream, int close_handle)
 				ret = fclose(data->file);
 				data->file = NULL;
 			}
+#else // __wasi__
+      ret = fclose(data->file);
+      data->file = NULL;
+#endif // __wasi__
 		} else if (data->fd != -1) {
 			ret = close(data->fd);
 			data->fd = -1;
@@ -1302,7 +1307,7 @@ static int php_plain_files_rename(php_stream_wrapper *wrapper, const char *url_f
 # ifdef EXDEV
 		if (errno == EXDEV) {
 			zend_stat_t sb;
-# if !defined(ZTS) && !defined(TSRM_WIN32)
+# if !defined(ZTS) && !defined(TSRM_WIN32) && !defined(__wasi__)
 			/* not sure what to do in ZTS case, umask is not thread-safe */
 			int oldmask = umask(077);
 # endif
@@ -1310,7 +1315,7 @@ static int php_plain_files_rename(php_stream_wrapper *wrapper, const char *url_f
 			if (php_copy_file(url_from, url_to) == SUCCESS) {
 				if (VCWD_STAT(url_from, &sb) == 0) {
 					success = 1;
-#  ifndef TSRM_WIN32
+#  if !defined(TSRM_WIN32) && !defined(__wasi__)
 					/*
 					 * Try to set user and permission info on the target.
 					 * If we're not root, then some of these may fail.
@@ -1343,7 +1348,7 @@ static int php_plain_files_rename(php_stream_wrapper *wrapper, const char *url_f
 			} else {
 				php_error_docref2(NULL, url_from, url_to, E_WARNING, "%s", strerror(errno));
 			}
-#  if !defined(ZTS) && !defined(TSRM_WIN32)
+#  if !defined(ZTS) && !defined(TSRM_WIN32) && !defined(__wasi__)
 			umask(oldmask);
 #  endif
 			return success;
@@ -1524,7 +1529,7 @@ static int php_plain_files_metadata(php_stream_wrapper *wrapper, const char *url
 
 			ret = VCWD_UTIME(url, newtime);
 			break;
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 		case PHP_STREAM_META_OWNER_NAME:
 		case PHP_STREAM_META_OWNER:
 			if(option == PHP_STREAM_META_OWNER_NAME) {
@@ -1535,7 +1540,6 @@ static int php_plain_files_metadata(php_stream_wrapper *wrapper, const char *url
 			} else {
 				uid = (uid_t)*(long *)value;
 			}
-			ret = VCWD_CHOWN(url, uid, -1);
 			break;
 		case PHP_STREAM_META_GROUP:
 		case PHP_STREAM_META_GROUP_NAME:
@@ -1548,12 +1552,15 @@ static int php_plain_files_metadata(php_stream_wrapper *wrapper, const char *url
 				gid = (gid_t)*(long *)value;
 			}
 			ret = VCWD_CHOWN(url, -1, gid);
+      return 0;
 			break;
 #endif
+#ifndef __wasi__
 		case PHP_STREAM_META_ACCESS:
 			mode = (mode_t)*(zend_long *)value;
 			ret = VCWD_CHMOD(url, mode);
 			break;
+#endif
 		default:
 			zend_value_error("Unknown option %d for stream_metadata", option);
 			return 0;
