@@ -95,7 +95,7 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 # include "valgrind/callgrind.h"
 #endif
 
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 /* XXX this will need to change later when threaded fastcgi is implemented.  shane */
 struct sigaction act, old_term, old_quit, old_int;
 #endif
@@ -1450,7 +1450,7 @@ static void init_request_info(fcgi_request *request)
 }
 /* }}} */
 
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 /**
  * Clean up child processes upon exit
  */
@@ -1471,7 +1471,7 @@ void fastcgi_cleanup(int signal)
 		exit(0);
 	}
 }
-#else
+#elif defined(PHP_WIN32)
 BOOL WINAPI fastcgi_cleanup(DWORD sig)
 {
 	int i = kids;
@@ -1917,6 +1917,7 @@ consult the installation file that came with this distribution, or visit \n\
 	fcgi_set_logger(fcgi_log);
 #endif
 
+#ifndef __wasi__
 	if (bindpath) {
 		int backlog = 128;
 		if (getenv("PHP_FCGI_BACKLOG")) {
@@ -1932,11 +1933,13 @@ consult the installation file that came with this distribution, or visit \n\
 		}
 		fastcgi = fcgi_is_fastcgi();
 	}
+#endif // __wasi__
 
 	/* make php call us to get _ENV vars */
 	php_php_import_environment_variables = php_import_environment_variables;
 	php_import_environment_variables = cgi_php_import_environment_variables;
 
+#ifndef __wasi__
 	if (fastcgi) {
 		/* How many times to run PHP scripts before dying */
 		if (getenv("PHP_FCGI_MAX_REQUESTS")) {
@@ -1982,7 +1985,7 @@ consult the installation file that came with this distribution, or visit \n\
 			fcgi_set_mgmt_var("FCGI_MAX_REQS",  sizeof("FCGI_MAX_REQS")-1,  "1", sizeof("1")-1);
 		}
 
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 		if (children) {
 			int running = 0;
 			pid_t pid;
@@ -1994,7 +1997,8 @@ consult the installation file that came with this distribution, or visit \n\
 			fprintf(stderr, "Process group %d\n", pgroup);
 #endif
 
-			/* Set up handler to kill children upon exit */
+#ifndef __wasi__
+      /* Set up handler to kill children upon exit */
 			act.sa_flags = 0;
 			act.sa_handler = fastcgi_cleanup;
 			if (sigaction(SIGTERM, &act, &old_term) ||
@@ -2004,6 +2008,7 @@ consult the installation file that came with this distribution, or visit \n\
 				perror("Can't set signals");
 				exit(1);
 			}
+#endif
 
 			if (fcgi_in_shutdown()) {
 				goto parent_out;
@@ -2205,6 +2210,7 @@ parent_loop_end:
 		}
 #endif /* WIN32 */
 	}
+#endif // __wasi__
 
 	zend_first_try {
 		while (!skip_getopt && (c = php_getopt(argc, argv, OPTIONS, &php_optarg, &php_optind, 1, 2)) != -1) {

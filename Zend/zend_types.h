@@ -1283,5 +1283,4 @@ static zend_always_inline uint32_t zval_delref_p(zval* pz) {
 #define ZVAL_COPY_OR_DUP_PROP(z, v) \
 	do { ZVAL_COPY_OR_DUP(z, v); Z_PROP_FLAG_P(z) = Z_PROP_FLAG_P(v); } while (0)
 
-
 #endif /* ZEND_TYPES_H */

@@ -34,7 +34,9 @@
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
+#ifndef __wasi__
 #include <netdb.h>
+#endif // __wasi__
 #ifdef _OSD_POSIX
 #undef STATUS
 #undef T_UNSPEC
@@ -118,8 +120,10 @@ extern void __res_ndestroy(res_state statp);
 #endif
 /* }}} */
 
+#ifndef __wasi__
 static zend_string *php_gethostbyaddr(char *ip);
 static zend_string *php_gethostbyname(char *name);
+#endif // __wasi__
 
 #ifdef HAVE_GETHOSTNAME
 /* {{{ Get the host name of the current machine */
@@ -143,17 +147,18 @@ PHP_FUNCTION(gethostname)
  we can have a dns.c, dns_unix.c and dns_win32.c instead of a messy dns.c full of #ifdef
 */
 
+#ifndef __wasi__
 /* {{{ Get the Internet host name corresponding to a given IP address */
 PHP_FUNCTION(gethostbyaddr)
 {
 	char *addr;
 	size_t addr_len;
-	zend_string *hostname;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_PATH(addr, addr_len)
 	ZEND_PARSE_PARAMETERS_END();
 
+	zend_string *hostname;
 	hostname = php_gethostbyaddr(addr);
 
 	if (hostname == NULL) {
@@ -168,7 +173,9 @@ PHP_FUNCTION(gethostbyaddr)
 	}
 }
 /* }}} */
+#endif // __wasi__
 
+#ifndef __wasi__
 /* {{{ php_gethostbyaddr */
 static zend_string *php_gethostbyaddr(char *ip)
 {
@@ -214,8 +221,9 @@ static zend_string *php_gethostbyaddr(char *ip)
 	return zend_string_init(hp->h_name, strlen(hp->h_name), 0);
 #endif
 }
-/* }}} */
+#endif // __wasi__
 
+#ifndef __wasi__
 /* {{{ Get the IP address corresponding to a given Internet host name */
 PHP_FUNCTION(gethostbyname)
 {
@@ -235,9 +243,11 @@ PHP_FUNCTION(gethostbyname)
 	RETURN_STR(php_gethostbyname(hostname));
 }
 /* }}} */
+#endif // __wasi__
 
 /* {{{ Return a list of IP addresses that a given hostname resolves to. */
-PHP_FUNCTION(gethostbynamel)
+#ifndef __wasi__
+PHP_FUNCTION(gethostbynamel)  /* {{{ */
 {
 	char *hostname;
 	size_t hostname_len;
@@ -282,9 +292,11 @@ PHP_FUNCTION(gethostbynamel)
 	}
 }
 /* }}} */
+#endif // __wasi__
 
+#ifndef __wasi__
 /* {{{ php_gethostbyname */
-static zend_string *php_gethostbyname(char *name)
+static zend_string *php_gethostbyname(char *name) /* {{{ */
 {
 	struct hostent *hp;
 	struct in_addr *h_addr_0; /* Don't call this h_addr, it's a macro! */
@@ -315,6 +327,7 @@ static zend_string *php_gethostbyname(char *name)
 	return zend_string_init(address, strlen(address), 0);
 }
 /* }}} */
+#endif // __wasi__
 
 /* Note: These functions are defined in ext/standard/dns_win32.c for Windows! */
 #if !defined(PHP_WIN32) && defined(HAVE_DNS_SEARCH_FUNC)

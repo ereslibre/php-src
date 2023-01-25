@@ -46,7 +46,7 @@ static php_stream_context *decode_context_param(zval *contextresource);
 
 /* Streams based network functions */
 
-#ifdef HAVE_SOCKETPAIR
+#if defined(HAVE_SOCKETPAIR) && !defined(__wasi__)
 /* {{{ Creates a pair of connected, indistinguishable socket streams */
 PHP_FUNCTION(stream_socket_pair)
 {
@@ -72,14 +72,14 @@ PHP_FUNCTION(stream_socket_pair)
         close(pair[0]);
         close(pair[1]);
         php_error_docref(NULL, E_WARNING, "Failed to open stream from socketpair");
-        RETURN_FALSE;        
+        RETURN_FALSE;
     }
     s2 = php_stream_sock_open_from_socket(pair[1], 0);
     if (s2 == NULL) {
         php_stream_free(s1, PHP_STREAM_FREE_CLOSE);
         close(pair[1]);
         php_error_docref(NULL, E_WARNING, "Failed to open stream from socketpair");
-        RETURN_FALSE;        
+        RETURN_FALSE;
     }
 
     array_init(return_value);
@@ -92,10 +92,11 @@ PHP_FUNCTION(stream_socket_pair)
 	add_next_index_resource(return_value, s1->res);
 	add_next_index_resource(return_value, s2->res);
 }
-/* }}} */
 #endif
+/* }}} */
 
 /* {{{ Open a client connection to a remote address */
+#ifndef __wasi__
 PHP_FUNCTION(stream_socket_client)
 {
 	zend_string *host;
@@ -186,6 +187,7 @@ PHP_FUNCTION(stream_socket_client)
 	php_stream_to_zval(stream, return_value);
 
 }
+#endif // __wasi__
 /* }}} */
 
 /* {{{ Create a server socket bound to localaddress */
@@ -344,6 +346,7 @@ PHP_FUNCTION(stream_socket_get_name)
 /* }}} */
 
 /* {{{ Send data to a socket stream.  If target_addr is specified it must be in dotted quad (or [ipv6]) format */
+#ifndef __wasi__
 PHP_FUNCTION(stream_socket_sendto)
 {
 	php_stream *stream;
@@ -373,9 +376,11 @@ PHP_FUNCTION(stream_socket_sendto)
 
 	RETURN_LONG(php_stream_xport_sendto(stream, data, datalen, (int)flags, target_addr_len ? &sa : NULL, sl));
 }
+#endif // __wasi__
 /* }}} */
 
 /* {{{ Receives data from a socket stream */
+#ifndef __wasi__
 PHP_FUNCTION(stream_socket_recvfrom)
 {
 	php_stream *stream;
@@ -423,6 +428,7 @@ PHP_FUNCTION(stream_socket_recvfrom)
 	zend_string_efree(read_buf);
 	RETURN_FALSE;
 }
+#endif // __wasi__
 /* }}} */
 
 /* {{{ Reads all remaining bytes (or up to maxlen bytes) from a stream and returns them as a string. */
@@ -1497,6 +1503,7 @@ PHP_FUNCTION(stream_set_read_buffer)
 /* }}} */
 
 /* {{{ Enable or disable a specific kind of crypto on the stream */
+#ifndef __wasi__
 PHP_FUNCTION(stream_socket_enable_crypto)
 {
 	zend_long cryptokind = 0;
@@ -1548,6 +1555,7 @@ PHP_FUNCTION(stream_socket_enable_crypto)
 			RETURN_TRUE;
 	}
 }
+#endif // __wasi__
 /* }}} */
 
 /* {{{ Determine what file will be opened by calls to fopen() with a relative path */
@@ -1718,7 +1726,7 @@ PHP_FUNCTION(sapi_windows_vt100_support)
 }
 #endif
 
-#ifdef HAVE_SHUTDOWN
+#if defined(HAVE_SHUTDOWN) && !defined(__wasi__)
 /* {{{ causes all or part of a full-duplex connection on the socket associated
 	with stream to be shut down.  If how is SHUT_RD,  further receptions will
 	be disallowed. If how is SHUT_WR, further transmissions will be disallowed.

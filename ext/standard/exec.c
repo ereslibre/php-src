@@ -111,7 +111,8 @@ static size_t handle_line(int type, zval *array, char *buf, size_t bufl) {
  * If type==3, output will be printed binary, no lines will be saved or returned (passthru)
  *
  */
-PHPAPI int php_exec(int type, const char *cmd, zval *array, zval *return_value)
+#ifndef __wasi__
+PHPAPI int php_exec(int type, const char *cmd, zval *array, zval *return_value) /* {{{ */
 {
 	FILE *fp;
 	char *buf;
@@ -202,6 +203,7 @@ err:
 	goto done;
 }
 /* }}} */
+#endif // __wasi__
 
 static void php_exec_ex(INTERNAL_FUNCTION_PARAMETERS, int mode) /* {{{ */
 {
@@ -510,7 +512,13 @@ PHP_FUNCTION(escapeshellarg)
 /* }}} */
 
 /* {{{ Execute command via shell and return complete output as string */
-PHP_FUNCTION(shell_exec)
+#ifdef __wasi__
+PHP_FUNCTION(shell_exec) { /* {{{ */
+  RETURN_FALSE;
+}
+/* }}} */
+#else
+PHP_FUNCTION(shell_exec) /* {{{ */
 {
 	FILE *in;
 	char *command;
@@ -547,8 +555,9 @@ PHP_FUNCTION(shell_exec)
 	if (ret && ZSTR_LEN(ret) > 0) {
 		RETVAL_STR(ret);
 	}
-}
+ }
 /* }}} */
+#endif // __wasi__
 
 #ifdef HAVE_NICE
 /* {{{ Change the priority of the current process */

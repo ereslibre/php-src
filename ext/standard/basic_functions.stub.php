@@ -739,6 +739,7 @@ const CREDITS_ALL = UNKNOWN;
 
 /* error levels */
 
+#ifndef __wasi__
 /**
  * system unusable
  * @var int
@@ -932,6 +933,7 @@ const LOG_NOWAIT = UNKNOWN;
  * @cvalue LOG_PERROR
  */
 const LOG_PERROR = UNKNOWN;
+#endif
 #endif
 
 /* string.c */
@@ -2146,9 +2148,13 @@ function md5_file(string $filename, bool $binary = false): string|false {}
 
 /* pageinfo.c */
 
+#ifndef __wasi__
 function getmyuid(): int|false {}
+#endif
 
+#ifndef __wasi__
 function getmygid(): int|false {}
+#endif
 
 function getmypid(): int|false {}
 
@@ -2799,9 +2805,13 @@ function stat(string $filename): array|false {}
  */
 function lstat(string $filename): array|false {}
 
+#ifndef __wasi__
 function chown(string $filename, string|int $user): bool {}
+#endif
 
+#ifndef __wasi__
 function chgrp(string $filename, string|int $group): bool {}
+#endif
 
 #ifdef HAVE_LCHOWN
 function lchown(string $filename, string|int $user): bool {}
@@ -2809,7 +2819,9 @@ function lchown(string $filename, string|int $user): bool {}
 function lchgrp(string $filename, string|int $group): bool {}
 #endif
 
+#ifndef __wasi__
 function chmod(string $filename, int $permissions): bool {}
+#endif
 
 #ifdef HAVE_UTIME
 function touch(string $filename, ?int $mtime = null, ?int $atime = null): bool {}
@@ -2954,7 +2966,9 @@ function link(string $target, string $link): bool {}
 
 /* mail.c */
 
+#ifndef __wasi__
 function mail(string $to, string $subject, string $message, array|string $additional_headers = [], string $additional_params = ""): bool {}
+#endif
 
 /* math.c */
 
@@ -3203,6 +3217,7 @@ function stream_filter_append($stream, string $filter_name, int $mode = 0, mixed
 /** @param resource $stream_filter */
 function stream_filter_remove($stream_filter): bool {}
 
+#ifndef __wasi__
 /**
  * @param int $error_code
  * @param string $error_message
@@ -3259,6 +3274,7 @@ function stream_socket_shutdown($stream, int $mode): bool {}
  * @refcount 1
  */
 function stream_socket_pair(int $domain, int $type, int $protocol): array|false {}
+#endif
 #endif
 
 /**

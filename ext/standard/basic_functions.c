@@ -66,9 +66,9 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #include <sys/stat.h>
 #endif
 
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 # include <netdb.h>
-#else
+#elif defined(PHP_WIN32)
 #include "win32/inet.h"
 #endif
 
@@ -349,8 +349,10 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 	php_register_url_stream_wrapper("glob", &php_glob_stream_wrapper);
 #endif
 	php_register_url_stream_wrapper("data", &php_stream_rfc2397_wrapper);
+#ifndef __wasi__
 	php_register_url_stream_wrapper("http", &php_stream_http_wrapper);
 	php_register_url_stream_wrapper("ftp", &php_stream_ftp_wrapper);
+#endif // __wasi__
 
 	BASIC_MINIT_SUBMODULE(hrtime)
 
@@ -450,9 +452,11 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 	tsrm_env_unlock();
 #endif
 
+#ifndef __wasi__
 	if (BG(umask) != -1) {
 		umask(BG(umask));
 	}
+#endif // __wasi__
 
 	/* Check if locale was changed and change it back
 	 * to the value in startup environment */
@@ -1397,9 +1401,13 @@ PHPAPI int _php_error_log_ex(int opt_err, const char *message, size_t message_le
 	switch (opt_err)
 	{
 		case 1:		/*send an email */
+#ifndef __wasi__
 			if (!php_mail(opt, "PHP error_log message", message, headers, NULL)) {
 				return FAILURE;
 			}
+#else
+      return FAILURE;
+#endif // __wasi__
 			break;
 
 		case 2:		/*send to an address */
@@ -1427,7 +1435,7 @@ PHPAPI int _php_error_log_ex(int opt_err, const char *message, size_t message_le
 			break;
 
 		default:
-			php_log_err_with_severity(message, LOG_NOTICE);
+			php_log_err(message);
 			break;
 	}
 	return SUCCESS;
@@ -2382,7 +2390,7 @@ PHP_FUNCTION(move_uploaded_file)
 	size_t path_len, new_path_len;
 	bool successful = 0;
 
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 	int oldmask; int ret;
 #endif
 
@@ -2405,7 +2413,7 @@ PHP_FUNCTION(move_uploaded_file)
 
 	if (VCWD_RENAME(path, new_path) == 0) {
 		successful = 1;
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 		oldmask = umask(077);
 		umask(oldmask);
 

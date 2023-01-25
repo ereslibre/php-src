@@ -1462,11 +1462,14 @@ PHPAPI char *php_get_current_user(void)
 			return "";
 		}
 		pwd = &_pw;
+#elif defined(__wasi__)
+    return "";
 #else
 		if ((pwd=getpwuid(pstat->st_uid))==NULL) {
 			return "";
 		}
 #endif
+#ifndef __wasi__
 		SG(request_info).current_user_length = strlen(pwd->pw_name);
 		SG(request_info).current_user = estrndup(pwd->pw_name, SG(request_info).current_user_length);
 #if defined(ZTS) && defined(HAVE_GETPWUID_R) && defined(_SC_GETPW_R_SIZE_MAX)
@@ -1474,6 +1477,7 @@ PHPAPI char *php_get_current_user(void)
 #endif
 		return SG(request_info).current_user;
 #endif
+#endif // __wasi__
 	}
 }
 /* }}} */
