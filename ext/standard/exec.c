@@ -113,6 +113,7 @@ static size_t handle_line(int type, zval *array, char *buf, size_t bufl) {
  */
 PHPAPI int php_exec(int type, const char *cmd, zval *array, zval *return_value)
 {
+#ifndef __wasi__
 	FILE *fp;
 	char *buf;
 	int pclose_return;
@@ -200,7 +201,10 @@ err:
 	pclose_return = -1;
 	RETVAL_FALSE;
 	goto done;
-}
+#else
+	return 0;
+#endif // __wasi__
+ }
 /* }}} */
 
 static void php_exec_ex(INTERNAL_FUNCTION_PARAMETERS, int mode) /* {{{ */
@@ -512,6 +516,7 @@ PHP_FUNCTION(escapeshellarg)
 /* {{{ Execute command via shell and return complete output as string */
 PHP_FUNCTION(shell_exec)
 {
+#ifndef __wasi__
 	FILE *in;
 	char *command;
 	size_t command_len;
@@ -547,7 +552,10 @@ PHP_FUNCTION(shell_exec)
 	if (ret && ZSTR_LEN(ret) > 0) {
 		RETVAL_STR(ret);
 	}
-}
+#else
+	RETURN_FALSE;
+#endif
+ }
 /* }}} */
 
 #ifdef HAVE_NICE

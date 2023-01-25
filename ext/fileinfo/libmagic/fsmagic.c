@@ -167,6 +167,7 @@ file_fsmagic(struct magic_set *ms, const char *fn, zend_stat_t *sb)
 # endif
 #endif
 
+#ifndef __wasi__
 #ifdef	S_IFIFO
 	case S_IFIFO:
 		if((ms->flags & MAGIC_DEVICES) != 0)
@@ -179,6 +180,7 @@ file_fsmagic(struct magic_set *ms, const char *fn, zend_stat_t *sb)
 			return -1;
 		break;
 #endif
+#endif // __wasi__
 #ifdef	S_IFDOOR
 	case S_IFDOOR:
 		if (mime) {

@@ -48,8 +48,10 @@
 #include <winsock2.h>
 #else
 #include <netinet/in.h>
+#ifndef __wasi__
 #include <netdb.h>
-#ifdef HAVE_ARPA_INET_H
+#endif // __wasi__
+#if HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
 #endif

@@ -55,7 +55,9 @@
 # endif
 # include <sys/socket.h>
 # include <netinet/in.h>
-# include <netdb.h>
+# ifndef __wasi__
+#  include <netdb.h>
+# endif // __wasi__
 # if HAVE_ARPA_INET_H
 #  include <arpa/inet.h>
 # endif
@@ -793,6 +795,7 @@ PHPAPI PHP_FUNCTION(fclose)
 /* {{{ Execute a command and open either a read or a write pipe to it */
 PHP_FUNCTION(popen)
 {
+#ifndef __wasi__
 	char *command, *mode;
 	size_t command_len, mode_len;
 	FILE *fp;
@@ -842,6 +845,9 @@ PHP_FUNCTION(popen)
 	}
 
 	efree(posix_mode);
+#else
+	RETURN_FALSE;
+#endif // __wasi__
 }
 /* }}} */
 
@@ -1223,6 +1229,7 @@ PHP_FUNCTION(readfile)
 /* {{{ Return or change the umask */
 PHP_FUNCTION(umask)
 {
+#ifndef __wasi__
 	zend_long mask = 0;
 	bool mask_is_null = 1;
 	int oldumask;
@@ -1245,6 +1252,9 @@ PHP_FUNCTION(umask)
 	}
 
 	RETURN_LONG(oldumask);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 

@@ -69,7 +69,9 @@ static int is_impersonate = 0;
 # include <netinet/in.h>
 # include <netinet/tcp.h>
 # include <arpa/inet.h>
+# ifndef __wasi__
 # include <netdb.h>
+# endif // __wasi__
 # include <signal.h>
 
 # if defined(HAVE_POLL_H) && defined(HAVE_POLL)
@@ -431,6 +433,7 @@ static void fcgi_signal_handler(int signo)
 
 static void fcgi_setup_signals(void)
 {
+#ifndef __wasi__
 	struct sigaction new_sa, old_sa;
 
 	sigemptyset(&new_sa.sa_mask);
@@ -442,6 +445,7 @@ static void fcgi_setup_signals(void)
 	if (old_sa.sa_handler == SIG_DFL) {
 		sigaction(SIGPIPE, &new_sa, NULL);
 	}
+#endif // __wasi__
 }
 #endif
 
@@ -526,6 +530,8 @@ int fcgi_init(void)
 		} else {
 			return is_fastcgi = 0;
 		}
+#elif defined(__wasi__)
+		return is_fastcgi = 0;
 #else
 		errno = 0;
 		if (getpeername(0, (struct sockaddr *)&sa, &len) != 0 && errno == ENOTCONN) {
@@ -675,6 +681,7 @@ int fcgi_listen(const char *path, int backlog)
 
 	/* Prepare socket address */
 	if (tcp) {
+#ifndef __wasi__
 		memset(&sa.sa_inet, 0, sizeof(sa.sa_inet));
 		sa.sa_inet.sin_family = AF_INET;
 		sa.sa_inet.sin_port = htons(port);
@@ -767,6 +774,7 @@ int fcgi_listen(const char *path, int backlog)
 	if (!tcp) {
 		chmod(path, 0777);
 	} else {
+#endif // __wasi__
 		char *ip = getenv("FCGI_WEB_SERVER_ADDRS");
 		char *cur, *end;
 		int n;
@@ -1099,7 +1107,9 @@ static int fcgi_read_request(fcgi_request *req)
 			int on = 1;
 # endif
 
+# ifndef __wasi__
 			setsockopt(req->fd, IPPROTO_TCP, TCP_NODELAY, (char*)&on, sizeof(on));
+# endif // __wasi__
 			req->nodelay = 1;
 		}
 #endif
@@ -1409,7 +1419,9 @@ int fcgi_accept_request(fcgi_request *req)
 					client_sa = sa;
 					if (req->fd >= 0 && !fcgi_is_allowed()) {
 						fcgi_log(FCGI_ERROR, "Connection disallowed: IP address '%s' has been dropped.", fcgi_get_last_client_ip());
+#ifndef __wasi__
 						closesocket(req->fd);
+#endif // __wasi__
 						req->fd = -1;
 						continue;
 					}

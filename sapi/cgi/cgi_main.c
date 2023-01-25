@@ -44,7 +44,9 @@
 # include <unistd.h>
 #endif
 
+#ifndef __wasi__
 #include <signal.h>
+#endif // __wasi__
 
 #include <locale.h>
 
@@ -95,10 +97,12 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 # include "valgrind/callgrind.h"
 #endif
 
+#ifndef __wasi__
 #ifndef PHP_WIN32
 /* XXX this will need to change later when threaded fastcgi is implemented.  shane */
 struct sigaction act, old_term, old_quit, old_int;
 #endif
+#endif // __wasi__
 
 static void (*php_php_import_environment_variables)(zval *array_ptr);
 
@@ -1456,6 +1460,7 @@ static void init_request_info(fcgi_request *request)
  */
 void fastcgi_cleanup(int signal)
 {
+#ifndef __wasi__
 #ifdef DEBUG_FASTCGI
 	fprintf(stderr, "FastCGI shutdown, pid %d\n", getpid());
 #endif
@@ -1470,6 +1475,9 @@ void fastcgi_cleanup(int signal)
 	} else {
 		exit(0);
 	}
+#else
+	exit(0);
+#endif // __wasi__
 }
 #else
 BOOL WINAPI fastcgi_cleanup(DWORD sig)
@@ -1765,7 +1773,9 @@ int main(int argc, char *argv[])
 # endif
 #endif
 
+#ifndef __wasi__
 	zend_signal_startup();
+#endif // __wasi__
 
 #ifdef ZTS
 	ts_allocate_id(&php_cgi_globals_id, sizeof(php_cgi_globals_struct), (ts_allocate_ctor) php_cgi_globals_ctor, NULL);
@@ -1872,6 +1882,7 @@ int main(int argc, char *argv[])
 		return FAILURE;
 	}
 
+#ifndef __wasi__
 	/* check force_cgi after startup, so we have proper output */
 	if (cgi && CGIG(force_redirect)) {
 		/* Apache will generate REDIRECT_STATUS,
@@ -1912,6 +1923,7 @@ consult the installation file that came with this distribution, or visit \n\
 			return FAILURE;
 		}
 	}
+#endif // __wasi__
 
 #ifndef HAVE_ATTRIBUTE_WEAK
 	fcgi_set_logger(fcgi_log);
@@ -1988,12 +2000,17 @@ consult the installation file that came with this distribution, or visit \n\
 			pid_t pid;
 
 			/* Create a process group for us & children */
+#ifndef __wasi__
 			setsid();
 			pgroup = getpgrp();
+#else
+			pgroup = 0;
+#endif // __wasi__
 #ifdef DEBUG_FASTCGI
 			fprintf(stderr, "Process group %d\n", pgroup);
 #endif
 
+#ifndef __wasi__
 			/* Set up handler to kill children upon exit */
 			act.sa_flags = 0;
 			act.sa_handler = fastcgi_cleanup;
@@ -2004,6 +2021,7 @@ consult the installation file that came with this distribution, or visit \n\
 				perror("Can't set signals");
 				exit(1);
 			}
+#endif // __wasi__
 
 			if (fcgi_in_shutdown()) {
 				goto parent_out;
@@ -2014,7 +2032,11 @@ consult the installation file that came with this distribution, or visit \n\
 #ifdef DEBUG_FASTCGI
 					fprintf(stderr, "Forking, %d running\n", running);
 #endif
+#ifndef __wasi__
 					pid = fork();
+#else
+					pid = 1;
+#endif // __wasi__
 					switch (pid) {
 					case 0:
 						/* One of the children.
@@ -2023,11 +2045,13 @@ consult the installation file that came with this distribution, or visit \n\
 						 */
 						parent = 0;
 
+#ifndef __wasi__
 						/* don't catch our signals */
 						sigaction(SIGTERM, &old_term, 0);
 						sigaction(SIGQUIT, &old_quit, 0);
 						sigaction(SIGINT,  &old_int,  0);
 						zend_signal_init();
+#endif // __wasi__
 						break;
 					case -1:
 						perror("php (pre-forking)");
@@ -2046,12 +2070,14 @@ consult the installation file that came with this distribution, or visit \n\
 #endif
 					parent_waiting = 1;
 					while (1) {
+#ifndef __wasi__
 						if (wait(&status) >= 0) {
 							running--;
 							break;
 						} else if (exit_signal) {
 							break;
 						}
+#endif // __wasi__
 					}
 					if (exit_signal) {
 #if 0

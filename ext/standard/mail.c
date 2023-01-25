@@ -372,6 +372,7 @@ static int php_mail_detect_multiple_crlf(const char *hdr) {
 /* {{{ php_mail */
 PHPAPI int php_mail(const char *to, const char *subject, const char *message, const char *headers, const char *extra_cmd)
 {
+#ifndef __wasi__
 #ifdef PHP_WIN32
 	int tsm_err;
 	char *tsm_errmsg = NULL;
@@ -553,6 +554,9 @@ PHPAPI int php_mail(const char *to, const char *subject, const char *message, co
 	}
 
 	MAIL_RET(1); /* never reached */
+#else
+	return 0;
+#endif // __wasi__
 }
 /* }}} */
 

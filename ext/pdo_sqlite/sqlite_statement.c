@@ -32,7 +32,9 @@ static int pdo_sqlite_stmt_dtor(pdo_stmt_t *stmt)
 	pdo_sqlite_stmt *S = (pdo_sqlite_stmt*)stmt->driver_data;
 
 	if (S->stmt) {
+#ifndef __wasi__
 		sqlite3_finalize(S->stmt);
+#endif
 		S->stmt = NULL;
 	}
 	efree(S);

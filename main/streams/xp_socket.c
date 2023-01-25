@@ -241,7 +241,9 @@ static int php_sockop_close(php_stream *stream, int close_handle)
 				n = php_pollfd_for_ms(sock->socket, POLLOUT, 500);
 			} while (n == -1 && php_socket_errno() == EINTR);
 #endif
+#ifndef __wasi__
 			closesocket(sock->socket);
+#endif // __wasi__
 			sock->socket = SOCK_ERR;
 		}
 
@@ -278,8 +280,11 @@ static inline int sock_sendto(php_netstream_data_t *sock, const char *buf, size_
 {
 	int ret;
 	if (addr) {
+#ifndef __wasi__
 		ret = sendto(sock->socket, buf, XP_SOCK_BUF_SIZE(buflen), flags, addr, XP_SOCK_BUF_SIZE(addrlen));
-
+#else
+		ret = 0;
+#endif // __wasi__
 		return (ret == SOCK_CONN_ERR) ? -1 : ret;
 	}
 #ifdef PHP_WIN32
@@ -300,7 +305,11 @@ static inline int sock_recvfrom(php_netstream_data_t *sock, char *buf, size_t bu
 	if (want_addr) {
 		php_sockaddr_storage sa;
 		socklen_t sl = sizeof(sa);
+#ifndef __wasi__
 		ret = recvfrom(sock->socket, buf, XP_SOCK_BUF_SIZE(buflen), flags, (struct sockaddr*)&sa, &sl);
+#else
+		ret = 0;
+#endif // __wasi__
 		ret = (ret == SOCK_CONN_ERR) ? -1 : ret;
 #ifdef PHP_WIN32
 		/* POSIX discards excess bytes without signalling failure; emulate this on Windows */
@@ -359,6 +368,7 @@ static int php_sockop_set_option(php_stream *stream, int option, int value, void
 
 				if (sock->socket == -1) {
 					alive = 0;
+#ifndef __wasi__
 				} else if ((value == 0 && ((MSG_DONTWAIT != 0) || !sock->is_blocked)) || php_pollfd_for(sock->socket, PHP_POLLREADABLE|POLLPRI, &tv) > 0) {
 					/* the poll() call was skipped if the socket is non-blocking (or MSG_DONTWAIT is available) and if the timeout is zero */
 #ifdef PHP_WIN32
@@ -374,6 +384,7 @@ static int php_sockop_set_option(php_stream *stream, int option, int value, void
 						(0 > ret && err != EWOULDBLOCK && err != EAGAIN && err != EMSGSIZE)) { /* there was an unrecoverable error */
 						alive = 0;
 					}
+#endif // __wasi__
 				}
 				return alive ? PHP_STREAM_OPTION_RETURN_OK : PHP_STREAM_OPTION_RETURN_ERR;
 			}
@@ -402,7 +413,11 @@ static int php_sockop_set_option(php_stream *stream, int option, int value, void
 
 			switch (xparam->op) {
 				case STREAM_XPORT_OP_LISTEN:
+#ifndef __wasi__
 					xparam->outputs.returncode = (listen(sock->socket, xparam->inputs.backlog) == 0) ?  0: -1;
+#else
+					xparam->outputs.returncode = 0;
+#endif // __wasi__
 					return PHP_STREAM_OPTION_RETURN_OK;
 
 				case STREAM_XPORT_OP_GET_NAME:
@@ -424,7 +439,9 @@ static int php_sockop_set_option(php_stream *stream, int option, int value, void
 				case STREAM_XPORT_OP_SEND:
 					flags = 0;
 					if ((xparam->inputs.flags & STREAM_OOB) == STREAM_OOB) {
+#ifndef __wasi__
 						flags |= MSG_OOB;
+#endif // __wasi__
 					}
 					xparam->outputs.returncode = sock_sendto(sock,
 							xparam->inputs.buf, xparam->inputs.buflen,
@@ -442,10 +459,14 @@ static int php_sockop_set_option(php_stream *stream, int option, int value, void
 				case STREAM_XPORT_OP_RECV:
 					flags = 0;
 					if ((xparam->inputs.flags & STREAM_OOB) == STREAM_OOB) {
+#ifndef __wasi__
 						flags |= MSG_OOB;
+#endif // __wasi__
 					}
 					if ((xparam->inputs.flags & STREAM_PEEK) == STREAM_PEEK) {
+#ifndef __wasi__
 						flags |= MSG_PEEK;
+#endif // __wasi__
 					}
 					xparam->outputs.returncode = sock_recvfrom(sock,
 							xparam->inputs.buf, xparam->inputs.buflen,
@@ -579,6 +600,7 @@ static inline int parse_unix_address(php_stream_xport_param *xparam, struct sock
 	memset(unix_addr, 0, sizeof(*unix_addr));
 	unix_addr->sun_family = AF_UNIX;
 
+#ifndef __wasi__
 	/* we need to be binary safe on systems that support an abstract
 	 * namespace */
 	if (xparam->inputs.namelen >= sizeof(unix_addr->sun_path)) {
@@ -594,6 +616,7 @@ static inline int parse_unix_address(php_stream_xport_param *xparam, struct sock
 	}
 
 	memcpy(unix_addr->sun_path, xparam->inputs.name, xparam->inputs.namelen);
+#endif // __wasi__
 
 	return 1;
 }
@@ -655,7 +678,9 @@ static inline int php_tcp_sockop_bind(php_stream *stream, php_netstream_data_t *
 	if (stream->ops == &php_stream_unix_socket_ops || stream->ops == &php_stream_unixdg_socket_ops) {
 		struct sockaddr_un unix_addr;
 
+#ifndef __wasi__
 		sock->socket = socket(PF_UNIX, stream->ops == &php_stream_unix_socket_ops ? SOCK_STREAM : SOCK_DGRAM, 0);
+#endif // __wasi__
 
 		if (sock->socket == SOCK_ERR) {
 			if (xparam->want_errortext) {
@@ -668,8 +693,12 @@ static inline int php_tcp_sockop_bind(php_stream *stream, php_netstream_data_t *
 
 		parse_unix_address(xparam, &unix_addr);
 
+#ifndef __wasi__
 		return bind(sock->socket, (const struct sockaddr *)&unix_addr,
 			(socklen_t) XtOffsetOf(struct sockaddr_un, sun_path) + xparam->inputs.namelen);
+#else
+		return 0;
+#endif // __wasi__
 	}
 #endif
 
@@ -736,7 +765,9 @@ static inline int php_tcp_sockop_connect(php_stream *stream, php_netstream_data_
 	if (stream->ops == &php_stream_unix_socket_ops || stream->ops == &php_stream_unixdg_socket_ops) {
 		struct sockaddr_un unix_addr;
 
+#ifndef __wasi__
 		sock->socket = socket(PF_UNIX, stream->ops == &php_stream_unix_socket_ops ? SOCK_STREAM : SOCK_DGRAM, 0);
+#endif // __wasi__
 
 		if (sock->socket == SOCK_ERR) {
 			if (xparam->want_errortext) {
@@ -748,7 +779,11 @@ static inline int php_tcp_sockop_connect(php_stream *stream, php_netstream_data_
 		parse_unix_address(xparam, &unix_addr);
 
 		ret = php_network_connect_socket(sock->socket,
+#ifndef __wasi__
 				(const struct sockaddr *)&unix_addr, (socklen_t) XtOffsetOf(struct sockaddr_un, sun_path) + xparam->inputs.namelen,
+#else
+				(const struct sockaddr *)&unix_addr, xparam->inputs.namelen,
+#endif // __wasi__
 				xparam->op == STREAM_XPORT_OP_CONNECT_ASYNC, xparam->inputs.timeout,
 				xparam->want_errortext ? &xparam->outputs.error_text : NULL,
 				&err);

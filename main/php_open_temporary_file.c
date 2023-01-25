@@ -30,7 +30,9 @@
 #include <sys/param.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#ifndef __wasi__
 #include <netdb.h>
+#endif
 #if HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif
@@ -97,7 +99,7 @@ static int php_do_open_temporary_file(const char *path, const char *pfx, zend_st
 	char cwd[MAXPATHLEN];
 	cwd_state new_state;
 	int fd = -1;
-#ifndef HAVE_MKSTEMP
+#if !defined(HAVE_MKSTEMP) || defined(__wasi__)
 	int open_flags = O_CREAT | O_TRUNC | O_RDWR
 #ifdef PHP_WIN32
 		| _O_BINARY
@@ -177,6 +179,8 @@ static int php_do_open_temporary_file(const char *path, const char *pfx, zend_st
 	free(pfxw);
 #elif defined(HAVE_MKSTEMP)
 	fd = mkstemp(opened_path);
+#elif defined(__wasi__)
+	fd = VCWD_OPEN(opened_path, open_flags);
 #else
 	if (mktemp(opened_path)) {
 		fd = VCWD_OPEN(opened_path, open_flags);

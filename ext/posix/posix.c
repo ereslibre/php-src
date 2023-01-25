@@ -37,8 +37,10 @@
 #include <signal.h>
 #include <sys/times.h>
 #include <errno.h>
+#ifndef __wasi__
 #include <grp.h>
 #include <pwd.h>
+#endif // __wasi__
 #ifdef HAVE_SYS_MKDEV_H
 # include <sys/mkdev.h>
 #endif
@@ -123,6 +125,7 @@ ZEND_GET_MODULE(posix)
 
 PHP_FUNCTION(posix_kill)
 {
+#ifndef __wasi__
 	zend_long pid, sig;
 
 	ZEND_PARSE_PARAMETERS_START(2, 2)
@@ -134,7 +137,7 @@ PHP_FUNCTION(posix_kill)
 		POSIX_G(last_error) = errno;
 		RETURN_FALSE;
 	}
-
+#endif // __wasi__
 	RETURN_TRUE;
 }
 /* }}} */
@@ -142,56 +145,88 @@ PHP_FUNCTION(posix_kill)
 /* {{{ Get the current process id (POSIX.1, 4.1.1) */
 PHP_FUNCTION(posix_getpid)
 {
+#ifndef __wasi__
 	PHP_POSIX_RETURN_LONG_FUNC(getpid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ Get the parent process id (POSIX.1, 4.1.1) */
 PHP_FUNCTION(posix_getppid)
 {
+#ifndef __wasi__
 	PHP_POSIX_RETURN_LONG_FUNC(getppid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ Get the current user id (POSIX.1, 4.2.1) */
 PHP_FUNCTION(posix_getuid)
 {
+#ifndef __wasi__
 	PHP_POSIX_RETURN_LONG_FUNC(getuid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ Get the current group id (POSIX.1, 4.2.1) */
 PHP_FUNCTION(posix_getgid)
 {
+#ifndef __wasi__
 	PHP_POSIX_RETURN_LONG_FUNC(getgid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ Get the current effective user id (POSIX.1, 4.2.1) */
 PHP_FUNCTION(posix_geteuid)
 {
+#ifndef __wasi__
 	PHP_POSIX_RETURN_LONG_FUNC(geteuid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ Get the current effective group id (POSIX.1, 4.2.1) */
 PHP_FUNCTION(posix_getegid)
 {
+#ifndef __wasi__
 	PHP_POSIX_RETURN_LONG_FUNC(getegid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ Set user id (POSIX.1, 4.2.2) */
 PHP_FUNCTION(posix_setuid)
 {
+#ifndef __wasi__
 	PHP_POSIX_SINGLE_ARG_FUNC(setuid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ Set group id (POSIX.1, 4.2.2) */
 PHP_FUNCTION(posix_setgid)
 {
+#ifndef __wasi__
 	PHP_POSIX_SINGLE_ARG_FUNC(setgid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
@@ -199,7 +234,11 @@ PHP_FUNCTION(posix_setgid)
 #ifdef HAVE_SETEUID
 PHP_FUNCTION(posix_seteuid)
 {
+#ifndef __wasi__
 	PHP_POSIX_SINGLE_ARG_FUNC(seteuid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 #endif
 /* }}} */
@@ -208,7 +247,11 @@ PHP_FUNCTION(posix_seteuid)
 #ifdef HAVE_SETEGID
 PHP_FUNCTION(posix_setegid)
 {
+#ifndef __wasi__
 	PHP_POSIX_SINGLE_ARG_FUNC(setegid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 #endif
 /* }}} */
@@ -268,7 +311,11 @@ PHP_FUNCTION(posix_getlogin)
 /* {{{ Get current process group id (POSIX.1, 4.3.1) */
 PHP_FUNCTION(posix_getpgrp)
 {
+#ifndef __wasi__
 	PHP_POSIX_RETURN_LONG_FUNC(getpgrp);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 /* }}} */
 
@@ -276,7 +323,11 @@ PHP_FUNCTION(posix_getpgrp)
 #ifdef HAVE_SETSID
 PHP_FUNCTION(posix_setsid)
 {
+#ifndef __wasi__
 	PHP_POSIX_RETURN_LONG_FUNC(setsid);
+#else
+	RETURN_LONG(0);
+#endif // __wasi__
 }
 #endif
 /* }}} */
@@ -284,6 +335,7 @@ PHP_FUNCTION(posix_setsid)
 /* {{{ Set process group id for job control (POSIX.1, 4.3.3) */
 PHP_FUNCTION(posix_setpgid)
 {
+#ifndef __wasi__
 	zend_long pid, pgid;
 
 	ZEND_PARSE_PARAMETERS_START(2, 2)
@@ -295,6 +347,7 @@ PHP_FUNCTION(posix_setpgid)
 		POSIX_G(last_error) = errno;
 		RETURN_FALSE;
 	}
+#endif // __wasi__
 
 	RETURN_TRUE;
 }
@@ -469,6 +522,7 @@ PHP_FUNCTION(posix_ttyname)
 			RETURN_FALSE;
 		}
 	}
+#ifndef __wasi__
 #if defined(ZTS) && defined(HAVE_TTYNAME_R) && defined(_SC_TTY_NAME_MAX)
 	buflen = sysconf(_SC_TTY_NAME_MAX);
 	if (buflen < 1) {
@@ -490,6 +544,8 @@ PHP_FUNCTION(posix_ttyname)
 	}
 	RETURN_STRING(p);
 #endif
+#endif // __wasi__
+	RETURN_STRING("");
 }
 /* }}} */
 
@@ -641,6 +697,7 @@ int php_posix_group_to_array(struct group *g, zval *array_group) /* {{{ */
 	zval array_members;
 	int count;
 
+#ifndef __wasi__
 	if (NULL == g)
 		return 0;
 
@@ -668,6 +725,9 @@ int php_posix_group_to_array(struct group *g, zval *array_group) /* {{{ */
 	zend_hash_str_update(Z_ARRVAL_P(array_group), "members", sizeof("members")-1, &array_members);
 	add_assoc_long(array_group, "gid", g->gr_gid);
 	return 1;
+#else
+	return 0;
+#endif // __wasi__
 }
 /* }}} */
 
@@ -725,6 +785,7 @@ PHP_FUNCTION(posix_access)
 /* {{{ Group database access (POSIX.1, 9.2.1) */
 PHP_FUNCTION(posix_getgrnam)
 {
+#ifndef __wasi__
 	char *name;
 	struct group *g;
 	size_t name_len;
@@ -773,12 +834,16 @@ try_again:
 #if defined(ZTS) && defined(HAVE_GETGRNAM_R) && defined(_SC_GETGR_R_SIZE_MAX)
 	efree(buf);
 #endif
+#else
+	RETURN_FALSE;
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ Group database access (POSIX.1, 9.2.1) */
 PHP_FUNCTION(posix_getgrgid)
 {
+#ifndef __wasi__
 	zend_long gid;
 #if defined(ZTS) && defined(HAVE_GETGRGID_R) && defined(_SC_GETGR_R_SIZE_MAX)
 	int ret;
@@ -831,11 +896,15 @@ try_again:
 #if defined(ZTS) && defined(HAVE_GETGRGID_R) && defined(_SC_GETGR_R_SIZE_MAX)
 	efree(grbuf);
 #endif
+#else
+	RETURN_FALSE;
+#endif // __wasi__
 }
 /* }}} */
 
 int php_posix_passwd_to_array(struct passwd *pw, zval *return_value) /* {{{ */
 {
+#ifndef __wasi__
 	if (NULL == pw)
 		return 0;
 	if (NULL == return_value || Z_TYPE_P(return_value) != IS_ARRAY)
@@ -849,12 +918,16 @@ int php_posix_passwd_to_array(struct passwd *pw, zval *return_value) /* {{{ */
 	add_assoc_string(return_value, "dir",       pw->pw_dir);
 	add_assoc_string(return_value, "shell",     pw->pw_shell);
 	return 1;
+#else
+	return 0;
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ User database access (POSIX.1, 9.2.2) */
 PHP_FUNCTION(posix_getpwnam)
 {
+#ifndef __wasi__
 	struct passwd *pw;
 	char *name;
 	size_t name_len;
@@ -903,12 +976,16 @@ try_again:
 #if defined(ZTS) && defined(_SC_GETPW_R_SIZE_MAX) && defined(HAVE_GETPWNAM_R)
 	efree(buf);
 #endif
+#else
+	RETURN_FALSE;
+#endif // __wasi__
 }
 /* }}} */
 
 /* {{{ User database access (POSIX.1, 9.2.2) */
 PHP_FUNCTION(posix_getpwuid)
 {
+#ifndef __wasi__
 	zend_long uid;
 #if defined(ZTS) && defined(_SC_GETPW_R_SIZE_MAX) && defined(HAVE_GETPWUID_R)
 	struct passwd _pw;
@@ -959,6 +1036,9 @@ try_again:
 #if defined(ZTS) && defined(_SC_GETPW_R_SIZE_MAX) && defined(HAVE_GETPWUID_R)
 	efree(pwbuf);
 #endif
+#else
+	RETURN_FALSE;
+#endif // __wasi__
 }
 /* }}} */
 
