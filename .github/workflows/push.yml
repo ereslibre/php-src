@@ -15,6 +15,7 @@ on:
       - PHP-8.1
       - PHP-8.2
       - master
+      - wasm32-wasi-minimal
   pull_request:
     branches:
       - '**'
