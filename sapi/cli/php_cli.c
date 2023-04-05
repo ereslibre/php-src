@@ -1152,24 +1152,85 @@ err:
 }
 /* }}} */
 
-/* {{{ main */
-#ifdef PHP_CLI_WIN32_NO_CONSOLE
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
-#else
-int main(int argc, char *argv[])
-#endif
-{
-#if defined(PHP_WIN32)
-# ifdef PHP_CLI_WIN32_NO_CONSOLE
-	int argc = __argc;
-	char **argv = __argv;
-# endif
-	int num_args;
-	wchar_t **argv_wide;
-	char **argv_save = argv;
-	BOOL using_wide_argv = 0;
+//--- ereslibre
+
+#include <stdlib.h>
+#include <string.h>
+
+#ifndef PROXY_WASM_KEEPALIVE
+#define PROXY_WASM_KEEPALIVE __attribute__((used)) __attribute__((visibility("default")))
 #endif
 
+#ifndef PROXY_WASM_EXPORTED
+#define STRINGIFIED_SYMBOL(symbol) #symbol
+#define PROXY_WASM_EXPORTED(symbol, ret, args) __attribute__((export_name(STRINGIFIED_SYMBOL(symbol)))) ret symbol args
+#endif
+
+/* enum class WasmHeaderMapType : int32_t { */
+/*   RequestHeaders = 0,              // During the onLog callback these are immutable */
+/*   RequestTrailers = 1,             // During the onLog callback these are immutable */
+/*   ResponseHeaders = 2,             // During the onLog callback these are immutable */
+/*   ResponseTrailers = 3,            // During the onLog callback these are immutable */
+/*   GrpcReceiveInitialMetadata = 4,  // Immutable */
+/*   GrpcReceiveTrailingMetadata = 5, // Immutable */
+/*   HttpCallResponseHeaders = 6,     // Immutable */
+/*   HttpCallResponseTrailers = 7,    // Immutable */
+/*   MAX = 7, */
+/* }; */
+uint32_t proxy_add_header_map_value(uint32_t type, const char *key_ptr,
+                                    size_t key_size, const char *value_ptr,
+                                    size_t value_size);
+
+int32_t proxy_log(int32_t log_level, const char *message_data, size_t message_size);
+
+uint32_t proxy_get_buffer_bytes(int32_t type, uint32_t start, uint32_t length, const char **ptr, size_t *size);
+
+PROXY_WASM_EXPORTED(proxy_abi_version_0_2_0, void, ()) {}
+PROXY_WASM_EXPORTED(proxy_on_memory_allocate, void*, (uint32_t memory_size)) {
+  return malloc(memory_size);
+}
+
+PROXY_WASM_EXPORTED(proxy_on_vm_start, int, (uint32_t root_context_id, size_t vm_configuration_size)) {
+  return 1;
+}
+
+PROXY_WASM_EXPORTED(proxy_on_context_create, void, (uint32_t context_id, uint32_t parent_context_id)) {}
+
+#define PluginConfiguration 7
+
+static 	int module_started = 0, sapi_started = 0;
+const char *configuration;
+
+PROXY_WASM_EXPORTED(proxy_on_configure, int, (uint32_t root_context_id, size_t plugin_configuration_size)) {
+  size_t configuration_size = 0;
+  proxy_get_buffer_bytes(PluginConfiguration, 0, 1024, &configuration, &configuration_size);
+
+  return 1;
+}
+
+PROXY_WASM_EXPORTED(proxy_on_done, int, (uint32_t context_id)) {
+  return 1;
+}
+
+PROXY_WASM_EXPORTED(proxy_on_queue_ready, void, (uint32_t context_id, uint32_t queue_id)) {}
+
+PROXY_WASM_EXPORTED(proxy_on_tick, void, (uint32_t root_context_id)) {}
+
+
+PROXY_WASM_EXPORTED(proxy_on_response_headers, int8_t, (uint32_t context_id, size_t num_headers, int end_of_stream)) {
+	const int argc = 3;
+	char *argv[argc] = {
+		"php",
+		"-r",
+		configuration,
+	};
+
+	do_cli(argc, argv);
+
+  return 2;
+}
+
+int main(int _argc, char **_argv) {
 	int c;
 	int exit_status = SUCCESS;
 	int module_started = 0, sapi_started = 0;
@@ -1177,118 +1238,16 @@ int main(int argc, char *argv[])
 	int php_optind = 1, use_extended_info = 0;
 	char *ini_path_override = NULL;
 	struct php_ini_builder ini_builder;
-	int ini_ignore = 0;
 	sapi_module_struct *sapi_module = &cli_sapi_module;
-
-	/*
-	 * Do not move this initialization. It needs to happen before argv is used
-	 * in any way.
-	 */
-	argv = save_ps_args(argc, argv);
-
-#if defined(PHP_WIN32) && !defined(PHP_CLI_WIN32_NO_CONSOLE)
-	php_win32_console_fileno_set_vt100(STDOUT_FILENO, TRUE);
-	php_win32_console_fileno_set_vt100(STDERR_FILENO, TRUE);
-#endif
-
 	cli_sapi_module.additional_functions = additional_functions;
-
-#if defined(PHP_WIN32) && defined(_DEBUG)
-	{
-		char *tmp = getenv("PHP_WIN32_DEBUG_HEAP");
-		if (tmp && ZEND_ATOL(tmp)) {
-			int tmp_flag;
-			_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
-			_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
-			_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
-			_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
-			_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
-			_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-			tmp_flag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-			tmp_flag |= _CRTDBG_DELAY_FREE_MEM_DF;
-			tmp_flag |= _CRTDBG_LEAK_CHECK_DF;
-
-			_CrtSetDbgFlag(tmp_flag);
-		}
-	}
-#endif
-
-#if defined(SIGPIPE) && defined(SIG_IGN)
-	signal(SIGPIPE, SIG_IGN); /* ignore SIGPIPE in standalone mode so
-								that sockets created via fsockopen()
-								don't kill PHP if the remote site
-								closes it.  in apache|apxs mode apache
-								does that for us!  thies@thieso.net
-								20000419 */
-#endif
-
-#ifdef ZTS
-	php_tsrm_startup();
-# ifdef PHP_WIN32
-	ZEND_TSRMLS_CACHE_UPDATE();
-# endif
-#endif
-
-	zend_signal_startup();
-
-#ifdef PHP_WIN32
-	_fmode = _O_BINARY;			/*sets default for file streams to binary */
-	setmode(_fileno(stdin), O_BINARY);		/* make the stdio mode be binary */
-	setmode(_fileno(stdout), O_BINARY);		/* make the stdio mode be binary */
-	setmode(_fileno(stderr), O_BINARY);		/* make the stdio mode be binary */
-#endif
-
 	php_ini_builder_init(&ini_builder);
-
-	while ((c = php_getopt(argc, argv, OPTIONS, &php_optarg, &php_optind, 1, 2))!=-1) {
-		switch (c) {
-			case 'c':
-				if (ini_path_override) {
-					free(ini_path_override);
-				}
-				ini_path_override = strdup(php_optarg);
-				break;
-			case 'n':
-				ini_ignore = 1;
-				break;
-			case 'd':
-				/* define ini entries on command line */
-				php_ini_builder_define(&ini_builder, php_optarg);
-				break;
-#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(__wasi__)
-			case 'S':
-				sapi_module = &cli_server_sapi_module;
-				cli_server_sapi_module.additional_functions = server_additional_functions;
-				break;
-#endif
-			case 'h': /* help & quit */
-			case '?':
-				php_cli_usage(argv[0]);
-				goto out;
-			case PHP_GETOPT_INVALID_ARG: /* print usage on bad options, exit 1 */
-				php_cli_usage(argv[0]);
-				exit_status = 1;
-				goto out;
-			case 'i': case 'v': case 'm':
-				sapi_module = &cli_sapi_module;
-				goto exit_loop;
-			case 'e': /* enable extended info output */
-				use_extended_info = 1;
-				break;
-		}
-	}
-exit_loop:
-
 	sapi_module->ini_defaults = sapi_cli_ini_defaults;
 	sapi_module->php_ini_path_override = ini_path_override;
 	sapi_module->phpinfo_as_text = 1;
 	sapi_module->php_ini_ignore_cwd = 1;
 	sapi_startup(sapi_module);
 	sapi_started = 1;
-
-	sapi_module->php_ini_ignore = ini_ignore;
-
-	sapi_module->executable_location = argv[0];
+	sapi_module->php_ini_ignore = 1;
 
 	if (sapi_module == &cli_sapi_module) {
 		php_ini_builder_prepend_literal(&ini_builder, HARDCODED_INI);
@@ -1304,68 +1263,9 @@ exit_loop:
 		 * Apart from that there seems no need for zend_ini_deactivate() yet.
 		 * So we goto out_err.*/
 		exit_status = 1;
-		goto out;
+		return 2;
 	}
 	module_started = 1;
 
-#if defined(PHP_WIN32)
-	php_win32_cp_cli_setup();
-	orig_cp = (php_win32_cp_get_orig())->id;
-	/* Ignore the delivered argv and argc, read from W API. This place
-		might be too late though, but this is the earliest place ATW
-		we can access the internal charset information from PHP. */
-	argv_wide = CommandLineToArgvW(GetCommandLineW(), &num_args);
-	PHP_WIN32_CP_W_TO_ANY_ARRAY(argv_wide, num_args, argv, argc)
-	using_wide_argv = 1;
-
-	SetConsoleCtrlHandler(php_cli_win32_ctrl_handler, TRUE);
-#endif
-
-	/* -e option */
-	if (use_extended_info) {
-		CG(compiler_options) |= ZEND_COMPILE_EXTENDED_INFO;
-	}
-
-	zend_first_try {
-#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(__wasi__)
-		if (sapi_module == &cli_sapi_module) {
-#endif
-			exit_status = do_cli(argc, argv);
-#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(__wasi__)
-		} else {
-			exit_status = do_cli_server(argc, argv);
-		}
-#endif
-	} zend_end_try();
-out:
-	if (ini_path_override) {
-		free(ini_path_override);
-	}
-	php_ini_builder_deinit(&ini_builder);
-	if (module_started) {
-		php_module_shutdown();
-	}
-	if (sapi_started) {
-		sapi_shutdown();
-	}
-#ifdef ZTS
-	tsrm_shutdown();
-#endif
-
-#if defined(PHP_WIN32)
-	(void)php_win32_cp_cli_restore();
-
-	if (using_wide_argv) {
-		PHP_WIN32_CP_FREE_ARRAY(argv, argc);
-		LocalFree(argv_wide);
-	}
-	argv = argv_save;
-#endif
-	/*
-	 * Do not move this de-initialization. It needs to happen right before
-	 * exiting.
-	 */
-	cleanup_ps_args(argv);
-	exit(exit_status);
+	return 0;
 }
-/* }}} */

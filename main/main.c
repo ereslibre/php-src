@@ -1507,6 +1507,27 @@ PHP_FUNCTION(set_time_limit)
 }
 /* }}} */
 
+#define ResponseHeaders 2
+
+PHP_FUNCTION(add_custom_header)
+{
+	zend_string *key;
+	zend_string *value;
+
+	ZEND_PARSE_PARAMETERS_START(2, 2)
+		Z_PARAM_STR(key)
+		Z_PARAM_STR(value)
+	ZEND_PARSE_PARAMETERS_END();
+
+  proxy_add_header_map_value(
+    ResponseHeaders,
+    ZSTR_VAL(key),
+    ZSTR_LEN(key),
+    ZSTR_VAL(value),
+    ZSTR_LEN(value)
+  );
+}
+
 /* {{{ php_fopen_wrapper_for_zend */
 static FILE *php_fopen_wrapper_for_zend(zend_string *filename, zend_string **opened_path)
 {

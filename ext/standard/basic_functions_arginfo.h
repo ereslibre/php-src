@@ -1,8 +1,13 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 140bc65b9543e5b4e1949b0f903a663578e54e82 */
+ * Stub hash: 1ca1135c0c984cbb591d4bfa34d4909977df18a0 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, seconds, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_add_custom_header, 0, 2, IS_VOID, 0)
+	ZEND_ARG_TYPE_INFO(0, key, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, value, IS_STRING, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_header_register_callback, 0, 1, _IS_BOOL, 0)
@@ -2231,6 +2236,7 @@ ZEND_END_ARG_INFO()
 
 
 ZEND_FUNCTION(set_time_limit);
+ZEND_FUNCTION(add_custom_header);
 ZEND_FUNCTION(header_register_callback);
 ZEND_FUNCTION(ob_start);
 ZEND_FUNCTION(ob_flush);
@@ -2877,6 +2883,7 @@ ZEND_FUNCTION(sapi_windows_generate_ctrl_event);
 
 static const zend_function_entry ext_functions[] = {
 	ZEND_FE(set_time_limit, arginfo_set_time_limit)
+	ZEND_FE(add_custom_header, arginfo_add_custom_header)
 	ZEND_FE(header_register_callback, arginfo_header_register_callback)
 	ZEND_FE(ob_start, arginfo_ob_start)
 	ZEND_FE(ob_flush, arginfo_ob_flush)
