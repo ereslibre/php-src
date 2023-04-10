@@ -62,7 +62,7 @@ datadir = ${datarootdir}/php
 datarootdir = /usr/local/php
 sysconfdir = ${prefix}/etc
 EXEEXT =
-CC = /nix/store/mksigl4a4jvnh5xy53xvql9c9n2wxdmc-wasi-sdk-19/bin/clang --sysroot=/nix/store/mksigl4a4jvnh5xy53xvql9c9n2wxdmc-wasi-sdk-19/share/wasi-sysroot -Wl,-allow-undefined
+CC = /nix/store/mksigl4a4jvnh5xy53xvql9c9n2wxdmc-wasi-sdk-19/bin/clang -Wl,--no-entry,-allow-undefined,-export=malloc,-export=free,-export=calloc,-export=realloc --sysroot=/nix/store/mksigl4a4jvnh5xy53xvql9c9n2wxdmc-wasi-sdk-19/share/wasi-sysroot
 BUILD_CC = gcc
 CFLAGS = $(CFLAGS_CLEAN) -prefer-non-pic -static
 CFLAGS_CLEAN = -fno-common -Wstrict-prototypes -Wall -Wextra -Wno-unused-parameter -Wno-sign-compare -O2 -D_WASI_EMULATED_GETPID -D_WASI_EMULATED_SIGNAL -D_WASI_EMULATED_PROCESS_CLOCKS -fvisibility=hidden $(PROF_FLAGS)
