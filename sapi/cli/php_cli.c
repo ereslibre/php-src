@@ -1235,7 +1235,7 @@ int main(int _argc, char **_argv) {
 	char *argv[] = {
 		"php",
 		"-r",
-		"echo('hello world from the CLI at ' . time());",
+		"echo('hello world from the CLI at ' . time()); cli_dolog();",
 	};
 
 	int c;

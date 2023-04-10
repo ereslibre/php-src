@@ -492,8 +492,15 @@ const zend_function_entry server_additional_functions[] = {
 	PHP_FE(apache_request_headers,	arginfo_apache_request_headers)
 	PHP_FE(apache_response_headers,	arginfo_apache_response_headers)
 	PHP_FALIAS(getallheaders, apache_request_headers, arginfo_getallheaders)
+	PHP_FE(cli_dolog, arginfo_cli_dolog)
 	PHP_FE_END
 };
+
+PHP_FUNCTION(cli_dolog)
+{
+	printf("dolog PHP -> C\n");
+}
+
 
 static int sapi_cli_server_startup(sapi_module_struct *sapi_module) /* {{{ */
 {
