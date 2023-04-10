@@ -1,8 +1,11 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 140bc65b9543e5b4e1949b0f903a663578e54e82 */
+ * Stub hash: 000391181b40460906c933d96307ab24d9da3d0c */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, seconds, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_dolog, 0, 0, IS_VOID, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_header_register_callback, 0, 1, _IS_BOOL, 0)
@@ -407,8 +410,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_getopt, 0, 1, MAY_BE_ARRAY|MAY_B
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, rest_index, "null")
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_flush, 0, 0, IS_VOID, 0)
-ZEND_END_ARG_INFO()
+#define arginfo_flush arginfo_dolog
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_sleep, 0, 1, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, seconds, IS_LONG, 0)
@@ -448,7 +450,7 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_error_get_last, 0, 0, IS_ARRAY, 1)
 ZEND_END_ARG_INFO()
 
-#define arginfo_error_clear_last arginfo_flush
+#define arginfo_error_clear_last arginfo_dolog
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_call_user_func, 0, 1, IS_MIXED, 0)
 	ZEND_ARG_TYPE_INFO(0, callback, IS_CALLABLE, 0)
@@ -2182,7 +2184,7 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_memory_get_peak_usage arginfo_memory_get_usage
 
-#define arginfo_memory_reset_peak_usage arginfo_flush
+#define arginfo_memory_reset_peak_usage arginfo_dolog
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_version_compare, 0, 2, MAY_BE_LONG|MAY_BE_BOOL)
 	ZEND_ARG_TYPE_INFO(0, version1, IS_STRING, 0)
@@ -2231,6 +2233,7 @@ ZEND_END_ARG_INFO()
 
 
 ZEND_FUNCTION(set_time_limit);
+ZEND_FUNCTION(dolog);
 ZEND_FUNCTION(header_register_callback);
 ZEND_FUNCTION(ob_start);
 ZEND_FUNCTION(ob_flush);
@@ -2877,6 +2880,7 @@ ZEND_FUNCTION(sapi_windows_generate_ctrl_event);
 
 static const zend_function_entry ext_functions[] = {
 	ZEND_FE(set_time_limit, arginfo_set_time_limit)
+	ZEND_FE(dolog, arginfo_dolog)
 	ZEND_FE(header_register_callback, arginfo_header_register_callback)
 	ZEND_FE(ob_start, arginfo_ob_start)
 	ZEND_FE(ob_flush, arginfo_ob_flush)

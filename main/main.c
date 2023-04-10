@@ -1507,6 +1507,11 @@ PHP_FUNCTION(set_time_limit)
 }
 /* }}} */
 
+PHP_FUNCTION(dolog)
+{
+	printf("ereslibre -- dolog\n");
+}
+
 /* {{{ php_fopen_wrapper_for_zend */
 static FILE *php_fopen_wrapper_for_zend(zend_string *filename, zend_string **opened_path)
 {

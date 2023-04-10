@@ -1503,6 +1503,7 @@ class AssertionError extends Error
 /* main/main.c */
 
 function set_time_limit(int $seconds): bool {}
+function dolog(): void {}
 
 /* main/SAPI.c */
 
