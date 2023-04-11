@@ -1206,8 +1206,17 @@ PROXY_WASM_EXPORTED(proxy_on_queue_ready, void, (uint32_t context_id, uint32_t q
 
 PROXY_WASM_EXPORTED(proxy_on_tick, void, (uint32_t root_context_id)) {}
 
+
+static 	int argc = 3;
+static char **argv__ = NULL;
+
 PROXY_WASM_EXPORTED(proxy_on_response_headers, int8_t, (uint32_t context_id, size_t num_headers, int end_of_stream)) {
-	int argc = 3;
+	do_cli(argc, argv__);
+
+  return 2;
+}
+
+int main(int _argc, char **_argv) {
 	char *argv[] = {
 		"php",
 		"-r",
@@ -1222,7 +1231,7 @@ PROXY_WASM_EXPORTED(proxy_on_response_headers, int8_t, (uint32_t context_id, siz
 	char *ini_path_override = NULL;
 	struct php_ini_builder ini_builder;
 	sapi_module_struct *sapi_module = &cli_sapi_module;
-	char **argv__ = save_ps_args(argc, argv);
+	argv__ = save_ps_args(argc, argv);
 	cli_sapi_module.additional_functions = additional_functions;
 	php_ini_builder_init(&ini_builder);
 	sapi_module->ini_defaults = sapi_cli_ini_defaults;
@@ -1249,14 +1258,9 @@ PROXY_WASM_EXPORTED(proxy_on_response_headers, int8_t, (uint32_t context_id, siz
 		 * Apart from that there seems no need for zend_ini_deactivate() yet.
 		 * So we goto out_err.*/
 		exit_status = 1;
-		return 1;
+		return 2;
 	}
 	module_started = 1;
-	do_cli(argc, argv__);
 
-  return 2;
-}
-
-int main(int _argc, char **_argv) {
 	return 0;
 }
