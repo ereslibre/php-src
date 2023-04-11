@@ -1177,7 +1177,6 @@ err:
 /*   HttpCallResponseTrailers = 7,    // Immutable */
 /*   MAX = 7, */
 /* }; */
-#define ResponseHeaders 2
 uint32_t proxy_add_header_map_value(uint32_t type, const char *key_ptr,
                                     size_t key_size, const char *value_ptr,
                                     size_t value_size);
@@ -1190,11 +1189,6 @@ PROXY_WASM_EXPORTED(proxy_on_memory_allocate, void*, (uint32_t memory_size)) {
 }
 
 PROXY_WASM_EXPORTED(proxy_on_vm_start, int, (uint32_t root_context_id, size_t vm_configuration_size)) {
-	const char *args[] = {
-			"-r",
-			"print('initializing')",
-	};
-	do_cli(3, args);
   return 1;
 }
 
@@ -1212,25 +1206,7 @@ PROXY_WASM_EXPORTED(proxy_on_queue_ready, void, (uint32_t context_id, uint32_t q
 
 PROXY_WASM_EXPORTED(proxy_on_tick, void, (uint32_t root_context_id)) {}
 
-const char *header_key = "x-wasm-header\0";
-const char *header_value = "ereslibre-demo-wasm\0";
-
 PROXY_WASM_EXPORTED(proxy_on_response_headers, int8_t, (uint32_t context_id, size_t num_headers, int end_of_stream)) {
-  char *log_message = "some message\0";
-  proxy_log(2, log_message, strlen(log_message));
-
-  proxy_add_header_map_value(
-    ResponseHeaders,
-    header_key,
-    strlen(header_key),
-    header_value,
-    strlen(header_value)
-  );
-
-  return 2;
-}
-
-int main(int _argc, char **_argv) {
 	int argc = 3;
 	char *argv[] = {
 		"php",
@@ -1278,5 +1254,9 @@ int main(int _argc, char **_argv) {
 	module_started = 1;
 	do_cli(argc, argv__);
 
+  return 2;
+}
+
+int main(int _argc, char **_argv) {
 	return 0;
 }

@@ -1507,9 +1507,19 @@ PHP_FUNCTION(set_time_limit)
 }
 /* }}} */
 
+#define ResponseHeaders 2
+const char *header_key = "x-wasm-header\0";
+const char *header_value = "wasmlabs-from-php\0";
+
 PHP_FUNCTION(dolog)
 {
-	printf("ereslibre -- dolog\n");
+  proxy_add_header_map_value(
+    ResponseHeaders,
+    header_key,
+    strlen(header_key),
+    header_value,
+    strlen(header_value)
+  );
 }
 
 /* {{{ php_fopen_wrapper_for_zend */
