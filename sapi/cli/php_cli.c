@@ -1183,6 +1183,8 @@ uint32_t proxy_add_header_map_value(uint32_t type, const char *key_ptr,
 
 int32_t proxy_log(int32_t log_level, const char *message_data, size_t message_size);
 
+uint32_t proxy_get_buffer_bytes(int32_t type, uint32_t start, uint32_t length, const char **ptr, size_t *size);
+
 PROXY_WASM_EXPORTED(proxy_abi_version_0_2_0, void, ()) {}
 PROXY_WASM_EXPORTED(proxy_on_memory_allocate, void*, (uint32_t memory_size)) {
   return malloc(memory_size);
@@ -1194,7 +1196,15 @@ PROXY_WASM_EXPORTED(proxy_on_vm_start, int, (uint32_t root_context_id, size_t vm
 
 PROXY_WASM_EXPORTED(proxy_on_context_create, void, (uint32_t context_id, uint32_t parent_context_id)) {}
 
+#define PluginConfiguration 7
+
 PROXY_WASM_EXPORTED(proxy_on_configure, int, (uint32_t root_context_id, size_t plugin_configuration_size)) {
+  const char *configuration;
+  size_t configuration_size = 0;
+  proxy_get_buffer_bytes(PluginConfiguration, 0, 1024, &configuration, &configuration_size);
+
+  printf("<<< plugin configuration (size: %d): %s\n", configuration_size, configuration);
+
   return 1;
 }
 
@@ -1220,7 +1230,7 @@ int main(int _argc, char **_argv) {
 	char *argv[] = {
 		"php",
 		"-r",
-		"dolog();",
+		"add_custom_header();",
 	};
 
 	int c;

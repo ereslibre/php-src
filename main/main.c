@@ -1511,7 +1511,7 @@ PHP_FUNCTION(set_time_limit)
 const char *header_key = "x-wasm-header\0";
 const char *header_value = "wasmlabs-from-php\0";
 
-PHP_FUNCTION(dolog)
+PHP_FUNCTION(add_custom_header)
 {
   proxy_add_header_map_value(
     ResponseHeaders,
