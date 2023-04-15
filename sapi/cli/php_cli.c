@@ -1198,16 +1198,10 @@ PROXY_WASM_EXPORTED(proxy_on_context_create, void, (uint32_t context_id, uint32_
 
 #define PluginConfiguration 7
 
-static 	int argc = 3;
-static char *argv__[3] = {
-	"php",
-	"-r",
-	"add_custom_header();\n",
-};
 static 	int module_started = 0, sapi_started = 0;
+const char *configuration;
 
 PROXY_WASM_EXPORTED(proxy_on_configure, int, (uint32_t root_context_id, size_t plugin_configuration_size)) {
-  const char *configuration;
   size_t configuration_size = 0;
   proxy_get_buffer_bytes(PluginConfiguration, 0, 1024, &configuration, &configuration_size);
 
@@ -1224,12 +1218,11 @@ PROXY_WASM_EXPORTED(proxy_on_tick, void, (uint32_t root_context_id)) {}
 
 
 PROXY_WASM_EXPORTED(proxy_on_response_headers, int8_t, (uint32_t context_id, size_t num_headers, int end_of_stream)) {
-	printf("<< proxy_on_response_headers (argc: %d; argv[0]: %s; argv[1]: %s; argv[2]: %s\n)", argc, argv__[0], argv__[1], argv__[2]);
-
-	static char *argv[3] = {
+	const int argc = 3;
+	char *argv[argc] = {
 		"php",
 		"-r",
-		"add_custom_header();\n",
+		configuration,
 	};
 
 	do_cli(argc, argv);
@@ -1246,7 +1239,6 @@ int main(int _argc, char **_argv) {
 	char *ini_path_override = NULL;
 	struct php_ini_builder ini_builder;
 	sapi_module_struct *sapi_module = &cli_sapi_module;
-	char **argv = save_ps_args(argc, argv__);
 	cli_sapi_module.additional_functions = additional_functions;
 	php_ini_builder_init(&ini_builder);
 	sapi_module->ini_defaults = sapi_cli_ini_defaults;
@@ -1256,8 +1248,6 @@ int main(int _argc, char **_argv) {
 	sapi_startup(sapi_module);
 	sapi_started = 1;
 	sapi_module->php_ini_ignore = 1;
-
-	sapi_module->executable_location = argv[0];
 
 	if (sapi_module == &cli_sapi_module) {
 		php_ini_builder_prepend_literal(&ini_builder, HARDCODED_INI);
