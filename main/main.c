@@ -1508,17 +1508,23 @@ PHP_FUNCTION(set_time_limit)
 /* }}} */
 
 #define ResponseHeaders 2
-const char *header_key = "x-wasm-header\0";
-const char *header_value = "wasmlabs-from-php\0";
 
 PHP_FUNCTION(add_custom_header)
 {
+	zend_string *key;
+	zend_string *value;
+
+	ZEND_PARSE_PARAMETERS_START(2, 2)
+		Z_PARAM_STR(key)
+		Z_PARAM_STR(value)
+	ZEND_PARSE_PARAMETERS_END();
+
   proxy_add_header_map_value(
     ResponseHeaders,
-    header_key,
-    strlen(header_key),
-    header_value,
-    strlen(header_value)
+    ZSTR_VAL(key),
+    ZSTR_LEN(key),
+    ZSTR_VAL(value),
+    ZSTR_LEN(value)
   );
 }
 
