@@ -61,10 +61,8 @@ PHPAPI void php_statpage(void)
 			BG(page_inode) = pstat->st_ino;
 			BG(page_mtime) = pstat->st_mtime;
 		} else { /* handler for situations where there is no source file, ex. php -r */
-#ifndef __wasi__
 			BG(page_uid) = getuid();
 			BG(page_gid) = getgid();
-#endif // __wasi__
 		}
 	}
 }
