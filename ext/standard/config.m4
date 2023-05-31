@@ -445,7 +445,7 @@ dnl
 dnl Setup extension sources
 dnl
 PHP_NEW_EXTENSION(standard, array.c base64.c basic_functions.c browscap.c crc32.c crypt.c \
-                            datetime.c dir.c dl.c dns.c file.c filestat.c \
+                            datetime.c dir.c dl.c file.c filestat.c \
                             flock_compat.c formatted_print.c fsock.c head.c html.c image.c \
                             info.c iptc.c link.c math.c md5.c metaphone.c \
                             microtime.c pack.c pageinfo.c quot_print.c \
@@ -461,9 +461,9 @@ PHP_NEW_EXTENSION(standard, array.c base64.c basic_functions.c browscap.c crc32.
 PHP_ADD_BUILD_DIR($ext_builddir/libavifinfo)
 
 if test "$WASI" = "yes"; then
-   PHP_ADD_SOURCES(ext/standard/wasi, dns.c exec.c file.c flock_compat.c,)
+   PHP_ADD_SOURCES(ext/standard/wasi, exec.c file.c flock_compat.c,)
 else
-   PHP_ADD_SOURCES(ext/standard, ftp_fopen_wrapper.c http_fopen_wrapper.c mail.c,)
+   PHP_ADD_SOURCES(ext/standard, dns.c ftp_fopen_wrapper.c http_fopen_wrapper.c mail.c,)
 fi
 
 PHP_ADD_MAKEFILE_FRAGMENT
