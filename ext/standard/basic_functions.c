@@ -452,11 +452,9 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 	tsrm_env_unlock();
 #endif
 
-#ifndef __wasi__
 	if (BG(umask) != -1) {
 		umask(BG(umask));
 	}
-#endif // __wasi__
 
 	/* Check if locale was changed and change it back
 	 * to the value in startup environment */
@@ -1401,13 +1399,9 @@ PHPAPI int _php_error_log_ex(int opt_err, const char *message, size_t message_le
 	switch (opt_err)
 	{
 		case 1:		/*send an email */
-#ifndef __wasi__
 			if (!php_mail(opt, "PHP error_log message", message, headers, NULL)) {
 				return FAILURE;
 			}
-#else
-      return FAILURE;
-#endif // __wasi__
 			break;
 
 		case 2:		/*send to an address */
@@ -2390,7 +2384,7 @@ PHP_FUNCTION(move_uploaded_file)
 	size_t path_len, new_path_len;
 	bool successful = 0;
 
-#if !defined(PHP_WIN32) && !defined(__wasi__)
+#if !defined(PHP_WIN32)
 	int oldmask; int ret;
 #endif
 
@@ -2413,7 +2407,7 @@ PHP_FUNCTION(move_uploaded_file)
 
 	if (VCWD_RENAME(path, new_path) == 0) {
 		successful = 1;
-#if !defined(PHP_WIN32) && !defined(__wasi__)
+#if !defined(PHP_WIN32)
 		oldmask = umask(077);
 		umask(oldmask);
 
