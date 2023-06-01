@@ -2109,6 +2109,8 @@ function strptime(string $timestamp, string $format): array|false {}
 
 /* dns.c */
 
+#ifndef __wasi__
+
 #ifdef HAVE_GETHOSTNAME
 /** @refcount 1 */
 function gethostname(): string|false {}
@@ -2152,6 +2154,8 @@ function dns_get_mx(string $hostname, &$hosts, &$weights = null): bool {}
  * @alias dns_get_mx
  */
 function getmxrr(string $hostname, &$hosts, &$weights = null): bool {}
+#endif
+
 #endif
 
 /* net.c */

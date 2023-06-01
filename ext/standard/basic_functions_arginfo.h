@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 7763da007bf30a405fc7fa16588649317ce7bb20 */
+ * Stub hash: 1ce980b1900dd56207b6c9c618a846368ab7a7c7 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, seconds, IS_LONG, 0)
@@ -610,35 +610,41 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_strptime, 0, 2, MAY_BE_ARRAY|MAY
 ZEND_END_ARG_INFO()
 #endif
 
-#if defined(HAVE_GETHOSTNAME)
+#if !defined(__wasi__) && defined(HAVE_GETHOSTNAME)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_gethostname, 0, 0, MAY_BE_STRING|MAY_BE_FALSE)
 ZEND_END_ARG_INFO()
 #endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_gethostbyaddr, 0, 1, MAY_BE_STRING|MAY_BE_FALSE)
 	ZEND_ARG_TYPE_INFO(0, ip, IS_STRING, 0)
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_gethostbyname, 0, 1, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, hostname, IS_STRING, 0)
 ZEND_END_ARG_INFO()
+#endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_gethostbynamel, 0, 1, MAY_BE_ARRAY|MAY_BE_FALSE)
 	ZEND_ARG_TYPE_INFO(0, hostname, IS_STRING, 0)
 ZEND_END_ARG_INFO()
+#endif
 
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_dns_check_record, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, hostname, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, type, IS_STRING, 0, "\"MX\"")
 ZEND_END_ARG_INFO()
 #endif
 
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 #define arginfo_checkdnsrr arginfo_dns_check_record
 #endif
 
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_dns_get_record, 0, 1, MAY_BE_ARRAY|MAY_BE_FALSE)
 	ZEND_ARG_TYPE_INFO(0, hostname, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, type, IS_LONG, 0, "DNS_ANY")
@@ -648,7 +654,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_dns_get_record, 0, 1, MAY_BE_ARR
 ZEND_END_ARG_INFO()
 #endif
 
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_dns_get_mx, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, hostname, IS_STRING, 0)
 	ZEND_ARG_INFO(1, hosts)
@@ -656,7 +662,7 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_dns_get_mx, 0, 2, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 #endif
 
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 #define arginfo_getmxrr arginfo_dns_get_mx
 #endif
 
@@ -2396,19 +2402,25 @@ ZEND_FUNCTION(crypt);
 #if defined(HAVE_STRPTIME)
 ZEND_FUNCTION(strptime);
 #endif
-#if defined(HAVE_GETHOSTNAME)
+#if !defined(__wasi__) && defined(HAVE_GETHOSTNAME)
 ZEND_FUNCTION(gethostname);
 #endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(gethostbyaddr);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(gethostbyname);
+#endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(gethostbynamel);
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#endif
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 ZEND_FUNCTION(dns_check_record);
 #endif
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 ZEND_FUNCTION(dns_get_record);
 #endif
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 ZEND_FUNCTION(dns_get_mx);
 #endif
 #if (defined(PHP_WIN32) || HAVE_GETIFADDRS || defined(__PASE__))
@@ -3048,25 +3060,31 @@ static const zend_function_entry ext_functions[] = {
 #if defined(HAVE_STRPTIME)
 	ZEND_DEP_FE(strptime, arginfo_strptime)
 #endif
-#if defined(HAVE_GETHOSTNAME)
+#if !defined(__wasi__) && defined(HAVE_GETHOSTNAME)
 	ZEND_FE(gethostname, arginfo_gethostname)
 #endif
+#if !defined(__wasi__)
 	ZEND_FE(gethostbyaddr, arginfo_gethostbyaddr)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(gethostbyname, arginfo_gethostbyname)
+#endif
+#if !defined(__wasi__)
 	ZEND_FE(gethostbynamel, arginfo_gethostbynamel)
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#endif
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 	ZEND_FE(dns_check_record, arginfo_dns_check_record)
 #endif
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 	ZEND_FALIAS(checkdnsrr, dns_check_record, arginfo_checkdnsrr)
 #endif
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 	ZEND_FE(dns_get_record, arginfo_dns_get_record)
 #endif
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 	ZEND_FE(dns_get_mx, arginfo_dns_get_mx)
 #endif
-#if (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 	ZEND_FALIAS(getmxrr, dns_get_mx, arginfo_getmxrr)
 #endif
 #if (defined(PHP_WIN32) || HAVE_GETIFADDRS || defined(__PASE__))
