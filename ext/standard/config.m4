@@ -463,7 +463,7 @@ PHP_ADD_BUILD_DIR($ext_builddir/libavifinfo)
 if test "$WASI" = "yes"; then
    PHP_ADD_SOURCES(ext/standard/wasi, exec.c file.c flock_compat.c mail.c,)
 else
-   PHP_ADD_SOURCES(ext/standard, dns.c ftp_fopen_wrapper.c http_fopen_wrapper.c mail.c,)
+   PHP_ADD_SOURCES(ext/standard, dns.c exec.c ftp_fopen_wrapper.c http_fopen_wrapper.c mail.c,)
 fi
 
 PHP_ADD_MAKEFILE_FRAGMENT

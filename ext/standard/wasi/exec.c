@@ -14,16 +14,43 @@
 
 #include "php.h"
 
-/* {{{ php_exec
- * If type==0, only last line of output is returned (exec)
- * If type==1, all lines will be printed and last lined returned (system)
- * If type==2, all lines will be saved to given array (exec with &$array)
- * If type==3, output will be printed binary, no lines will be saved or returned (passthru)
- *
- */
+PHP_MINIT_FUNCTION(exec)
+{
+	return SUCCESS;
+}
+
+PHP_FUNCTION(exec)
+{
+	RETURN_FALSE;
+}
+
+PHP_FUNCTION(system)
+{
+	RETURN_FALSE;
+}
+
+PHP_FUNCTION(passthru)
+{
+	RETURN_FALSE;
+}
+
+PHP_FUNCTION(escapeshellarg)
+{
+	RETURN_FALSE;
+}
+
+PHP_FUNCTION(escapeshellcmd)
+{
+	RETURN_FALSE;
+}
+
+PHP_FUNCTION(shell_exec)
+{
+	RETURN_FALSE;
+}
+
 PHPAPI int php_exec(int type, const char *cmd, zval *array, zval *return_value)
 {
 	RETVAL_FALSE;
   return -1;
 }
-/* }}} */
