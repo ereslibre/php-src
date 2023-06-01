@@ -461,7 +461,7 @@ PHP_NEW_EXTENSION(standard, array.c base64.c basic_functions.c browscap.c crc32.
 PHP_ADD_BUILD_DIR($ext_builddir/libavifinfo)
 
 if test "$WASI" = "yes"; then
-   PHP_ADD_SOURCES(ext/standard/wasi, exec.c file.c flock_compat.c,)
+   PHP_ADD_SOURCES(ext/standard/wasi, exec.c file.c flock_compat.c mail.c,)
 else
    PHP_ADD_SOURCES(ext/standard, dns.c ftp_fopen_wrapper.c http_fopen_wrapper.c mail.c,)
 fi
