@@ -1225,14 +1225,7 @@ PHP_FUNCTION(readfile)
 /* }}} */
 
 /* {{{ Return or change the umask */
-#ifdef __wasi__
-PHP_FUNCTION(umask) /* {{{ */
-{
-  // WASI has no support for umask
-  RETURN_LONG(0);
-}
-/* }}} */
-#else
+#ifndef __wasi__
 PHP_FUNCTION(umask) /* {{{ */
 {
 	zend_long mask = 0;

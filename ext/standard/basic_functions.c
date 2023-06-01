@@ -452,9 +452,11 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 	tsrm_env_unlock();
 #endif
 
+#ifndef __wasi__
 	if (BG(umask) != -1) {
 		umask(BG(umask));
 	}
+#endif // __wasi__
 
 	/* Check if locale was changed and change it back
 	 * to the value in startup environment */
@@ -2407,7 +2409,7 @@ PHP_FUNCTION(move_uploaded_file)
 
 	if (VCWD_RENAME(path, new_path) == 0) {
 		successful = 1;
-#if !defined(PHP_WIN32)
+#if !defined(PHP_WIN32) && !defined(__wasi__)
 		oldmask = umask(077);
 		umask(oldmask);
 

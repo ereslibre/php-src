@@ -20,3 +20,10 @@ PHP_FUNCTION(popen) /* {{{ */
   RETURN_FALSE;
 }
 /* }}} */
+
+/* {{{ Return or change the umask */
+PHP_FUNCTION(umask) /* {{{ */
+{
+	RETURN_FALSE;
+}
+/* }}} */
