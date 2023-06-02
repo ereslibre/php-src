@@ -1917,7 +1917,6 @@ consult the installation file that came with this distribution, or visit \n\
 	fcgi_set_logger(fcgi_log);
 #endif
 
-#ifndef __wasi__
 	if (bindpath) {
 		int backlog = 128;
 		if (getenv("PHP_FCGI_BACKLOG")) {
@@ -1933,13 +1932,11 @@ consult the installation file that came with this distribution, or visit \n\
 		}
 		fastcgi = fcgi_is_fastcgi();
 	}
-#endif // __wasi__
 
 	/* make php call us to get _ENV vars */
 	php_php_import_environment_variables = php_import_environment_variables;
 	php_import_environment_variables = cgi_php_import_environment_variables;
 
-#ifndef __wasi__
 	if (fastcgi) {
 		/* How many times to run PHP scripts before dying */
 		if (getenv("PHP_FCGI_MAX_REQUESTS")) {
@@ -1997,7 +1994,6 @@ consult the installation file that came with this distribution, or visit \n\
 			fprintf(stderr, "Process group %d\n", pgroup);
 #endif
 
-#ifndef __wasi__
       /* Set up handler to kill children upon exit */
 			act.sa_flags = 0;
 			act.sa_handler = fastcgi_cleanup;
@@ -2008,7 +2004,6 @@ consult the installation file that came with this distribution, or visit \n\
 				perror("Can't set signals");
 				exit(1);
 			}
-#endif
 
 			if (fcgi_in_shutdown()) {
 				goto parent_out;
@@ -2075,7 +2070,7 @@ consult the installation file that came with this distribution, or visit \n\
 			zend_signal_init();
 		}
 
-#else
+#elif defined(PHP_WIN32)
 		if (children) {
 			wchar_t *cmd_line_tmp, cmd_line[PHP_WIN32_IOUTIL_MAXPATHLEN];
 			size_t cmd_line_len;
@@ -2210,7 +2205,6 @@ parent_loop_end:
 		}
 #endif /* WIN32 */
 	}
-#endif // __wasi__
 
 	zend_first_try {
 		while (!skip_getopt && (c = php_getopt(argc, argv, OPTIONS, &php_optarg, &php_optind, 1, 2)) != -1) {

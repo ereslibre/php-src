@@ -1717,7 +1717,7 @@ PHP_ADD_SOURCES(main, main.c snprintf.c spprintf.c \
 
 if test "$WASI" = "yes"; then
    PHP_ADD_SOURCES(wasi, unistd.c,)
-	 PHP_ADD_SOURCES(wasi/main, network.c php_open_temporary_file.c,)
+	 PHP_ADD_SOURCES(wasi/main, fastcgi.c network.c php_open_temporary_file.c,)
 else
    PHP_ADD_SOURCES(main, php_syslog.c network.c,)
 	 PHP_ADD_SOURCES_X(main, fastcgi.c, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1, PHP_FASTCGI_OBJS, no)
