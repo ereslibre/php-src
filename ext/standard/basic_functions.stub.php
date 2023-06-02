@@ -2186,9 +2186,7 @@ function md5_file(string $filename, bool $binary = false): string|false {}
 
 #ifndef __wasi__
 function getmyuid(): int|false {}
-#endif
 
-#ifndef __wasi__
 function getmygid(): int|false {}
 #endif
 
@@ -2906,9 +2904,7 @@ function lstat(string $filename): array|false {}
 
 #ifndef __wasi__
 function chown(string $filename, string|int $user): bool {}
-#endif
 
-#ifndef __wasi__
 function chgrp(string $filename, string|int $group): bool {}
 #endif
 
