@@ -275,6 +275,11 @@ if test "$ac_cv_safe_to_define___extensions__" = yes ; then
   AC_MSG_RESULT(yes)
 fi
 
+dnl wasm32-wasi builds with a specific execution model named "command"
+if test "$WASI" = "yes"; then
+  CPPFLAGS="$CPPFLAGS -mexec-model=command -Wl,--gc-sections"
+fi
+
 dnl Include Zend configurations.
 dnl ----------------------------------------------------------------------------
 
