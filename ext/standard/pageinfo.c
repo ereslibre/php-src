@@ -87,7 +87,6 @@ zend_long php_getgid(void)
 }
 /* }}} */
 
-#ifndef __wasi__
 /* {{{ Get PHP script owner's UID */
 PHP_FUNCTION(getmyuid)
 {
@@ -103,9 +102,7 @@ PHP_FUNCTION(getmyuid)
 	}
 }
 /* }}} */
-#endif // __wasi__
 
-#ifndef __wasi__
 /* {{{ Get PHP script owner's GID */
 PHP_FUNCTION(getmygid)
 {
@@ -121,7 +118,6 @@ PHP_FUNCTION(getmygid)
 	}
 }
 /* }}} */
-#endif // __wasi__
 
 /* {{{ Get current process ID */
 PHP_FUNCTION(getmypid)
