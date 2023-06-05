@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 0f2924a350dcf9619fc3c4a0586d5807f80b2289 */
+ * Stub hash: 0c04f78623070d53f98823ea8f09437f7f266d0a */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, seconds, IS_LONG, 0)
@@ -1186,11 +1186,13 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_proc_nice, 0, 1, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 #endif
 
+#if !defined(__wasi__)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_flock, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_INFO(0, stream)
 	ZEND_ARG_TYPE_INFO(0, operation, IS_LONG, 0)
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, would_block, "null")
 ZEND_END_ARG_INFO()
+#endif
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_get_meta_tags, 0, 1, MAY_BE_ARRAY|MAY_BE_FALSE)
 	ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)
@@ -2566,7 +2568,9 @@ ZEND_FUNCTION(shell_exec);
 #if defined(HAVE_NICE)
 ZEND_FUNCTION(proc_nice);
 #endif
+#if !defined(__wasi__)
 ZEND_FUNCTION(flock);
+#endif
 ZEND_FUNCTION(get_meta_tags);
 ZEND_FUNCTION(pclose);
 ZEND_FUNCTION(popen);
@@ -3233,7 +3237,9 @@ static const zend_function_entry ext_functions[] = {
 #if defined(HAVE_NICE)
 	ZEND_FE(proc_nice, arginfo_proc_nice)
 #endif
+#if !defined(__wasi__)
 	ZEND_FE(flock, arginfo_flock)
+#endif
 	ZEND_FE(get_meta_tags, arginfo_get_meta_tags)
 	ZEND_FE(pclose, arginfo_pclose)
 	ZEND_FE(popen, arginfo_popen)

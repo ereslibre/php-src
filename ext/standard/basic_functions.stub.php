@@ -2691,11 +2691,14 @@ function proc_nice(int $priority): bool {}
 
 /* file.c */
 
+
+#ifndef __wasi__
 /**
  * @param resource $stream
  * @param int $would_block
  */
 function flock($stream, int $operation, &$would_block = null): bool {}
+#endif
 
 /**
  * @return array<string, string>|false

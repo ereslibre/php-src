@@ -25,7 +25,6 @@ PHPAPI int flock(int fd, int operation)
 }
 #endif /* !defined(HAVE_FLOCK) */
 
-#ifndef __wasi__
 PHPAPI int php_flock(int fd, int operation)
 #if defined(HAVE_STRUCT_FLOCK) /* {{{ */
 {
@@ -216,4 +215,3 @@ int inet_aton(const char *cp, struct in_addr *ap)
 /* }}} */
 #endif /* !HAVE_INET_ATON */
 #endif
-#endif // __wasi__
