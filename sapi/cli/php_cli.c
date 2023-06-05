@@ -1250,7 +1250,7 @@ int main(int argc, char *argv[])
 				/* define ini entries on command line */
 				php_ini_builder_define(&ini_builder, php_optarg);
 				break;
-#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(__wasi__)
+#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(PHP_WASI)
 			case 'S':
 				sapi_module = &cli_server_sapi_module;
 				cli_server_sapi_module.additional_functions = server_additional_functions;
@@ -1322,11 +1322,11 @@ exit_loop:
 	}
 
 	zend_first_try {
-#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(__wasi__)
+#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(PHP_WASI)
 		if (sapi_module == &cli_sapi_module) {
 #endif
 			exit_status = do_cli(argc, argv);
-#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(__wasi__)
+#if !defined(PHP_CLI_WIN32_NO_CONSOLE) && !defined(PHP_WASI)
 		} else {
 			exit_status = do_cli_server(argc, argv);
 		}

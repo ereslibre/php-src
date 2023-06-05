@@ -52,9 +52,9 @@
 #include <winsock2.h>
 #else
 #include <netinet/in.h>
-#ifndef __wasi__
+#ifndef PHP_WASI
 #include <netdb.h>
-#endif // __wasi__
+#endif // PHP_WASI
 #if HAVE_ARPA_INET_H
 #include <arpa/inet.h>
 #endif

@@ -95,7 +95,7 @@ int __riscosify_control = __RISCOSIFY_STRICT_UNIX_SPECS;
 # include "valgrind/callgrind.h"
 #endif
 
-#if !defined(PHP_WIN32) && !defined(__wasi__)
+#if !defined(PHP_WIN32) && !defined(PHP_WASI)
 /* XXX this will need to change later when threaded fastcgi is implemented.  shane */
 struct sigaction act, old_term, old_quit, old_int;
 #endif
@@ -1450,7 +1450,7 @@ static void init_request_info(fcgi_request *request)
 }
 /* }}} */
 
-#if !defined(PHP_WIN32) && !defined(__wasi__)
+#if !defined(PHP_WIN32) && !defined(PHP_WASI)
 /**
  * Clean up child processes upon exit
  */
@@ -1982,7 +1982,7 @@ consult the installation file that came with this distribution, or visit \n\
 			fcgi_set_mgmt_var("FCGI_MAX_REQS",  sizeof("FCGI_MAX_REQS")-1,  "1", sizeof("1")-1);
 		}
 
-#if !defined(PHP_WIN32) && !defined(__wasi__)
+#if !defined(PHP_WIN32) && !defined(PHP_WASI)
 		if (children) {
 			int running = 0;
 			pid_t pid;

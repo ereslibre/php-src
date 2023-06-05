@@ -317,7 +317,7 @@ php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *pa
 			return NULL;
 		}
 
-#if defined(HAVE_UNISTD_H) && !defined(__wasi__)
+#if defined(HAVE_UNISTD_H) && !defined(PHP_WASI)
 		dtablesize = getdtablesize();
 #else
 		dtablesize = INT_MAX;
@@ -390,7 +390,7 @@ php_stream * php_stream_url_wrap_php(php_stream_wrapper *wrapper, const char *pa
 		return NULL;
 	}
 
-#if defined(S_IFSOCK) && !defined(PHP_WIN32) && !defined(__wasi__)
+#if defined(S_IFSOCK) && !defined(PHP_WIN32) && !defined(PHP_WASI)
 	do {
 		zend_stat_t st = {0};
 		memset(&st, 0, sizeof(st));

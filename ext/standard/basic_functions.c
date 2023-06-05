@@ -66,7 +66,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #include <sys/stat.h>
 #endif
 
-#if !defined(PHP_WIN32) && !defined(__wasi__)
+#if !defined(PHP_WIN32) && !defined(PHP_WASI)
 # include <netdb.h>
 #elif defined(PHP_WIN32)
 #include "win32/inet.h"
@@ -349,10 +349,10 @@ PHP_MINIT_FUNCTION(basic) /* {{{ */
 	php_register_url_stream_wrapper("glob", &php_glob_stream_wrapper);
 #endif
 	php_register_url_stream_wrapper("data", &php_stream_rfc2397_wrapper);
-#ifndef __wasi__
+#ifndef PHP_WASI
 	php_register_url_stream_wrapper("http", &php_stream_http_wrapper);
 	php_register_url_stream_wrapper("ftp", &php_stream_ftp_wrapper);
-#endif // __wasi__
+#endif // PHP_WASI
 
 	BASIC_MINIT_SUBMODULE(hrtime)
 
@@ -452,11 +452,11 @@ PHP_RSHUTDOWN_FUNCTION(basic) /* {{{ */
 	tsrm_env_unlock();
 #endif
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 	if (BG(umask) != -1) {
 		umask(BG(umask));
 	}
-#endif // __wasi__
+#endif // PHP_WASI
 
 	/* Check if locale was changed and change it back
 	 * to the value in startup environment */
@@ -2409,7 +2409,7 @@ PHP_FUNCTION(move_uploaded_file)
 
 	if (VCWD_RENAME(path, new_path) == 0) {
 		successful = 1;
-#if !defined(PHP_WIN32) && !defined(__wasi__)
+#if !defined(PHP_WIN32) && !defined(PHP_WASI)
 		oldmask = umask(077);
 		umask(oldmask);
 

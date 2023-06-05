@@ -512,19 +512,19 @@ static const func_info_t func_infos[] = {
 #if defined(HAVE_STRPTIME)
 	F1("strptime", MAY_BE_ARRAY|MAY_BE_ARRAY_KEY_STRING|MAY_BE_ARRAY_OF_LONG|MAY_BE_ARRAY_OF_STRING|MAY_BE_FALSE),
 #endif
-#if !defined(__wasi__) && defined(HAVE_GETHOSTNAME)
+#if !defined(PHP_WASI) && defined(HAVE_GETHOSTNAME)
 	F1("gethostname", MAY_BE_STRING|MAY_BE_FALSE),
 #endif
-#if !defined(__wasi__)
+#if !defined(PHP_WASI)
 	F1("gethostbyaddr", MAY_BE_STRING|MAY_BE_FALSE),
 #endif
-#if !defined(__wasi__)
+#if !defined(PHP_WASI)
 	F1("gethostbyname", MAY_BE_STRING),
 #endif
-#if !defined(__wasi__)
+#if !defined(PHP_WASI)
 	F1("gethostbynamel", MAY_BE_ARRAY|MAY_BE_ARRAY_KEY_LONG|MAY_BE_ARRAY_OF_STRING|MAY_BE_FALSE),
 #endif
-#if !defined(__wasi__) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
+#if !defined(PHP_WASI) && (defined(PHP_WIN32) || defined(HAVE_DNS_SEARCH_FUNC))
 	F1("dns_get_record", MAY_BE_ARRAY|MAY_BE_ARRAY_KEY_LONG|MAY_BE_ARRAY_OF_ARRAY|MAY_BE_FALSE),
 #endif
 	F1("md5", MAY_BE_STRING),
@@ -664,19 +664,19 @@ static const func_info_t func_infos[] = {
 	FN("stream_context_set_default", MAY_BE_RESOURCE),
 	FN("stream_filter_prepend", MAY_BE_RESOURCE|MAY_BE_FALSE),
 	FN("stream_filter_append", MAY_BE_RESOURCE|MAY_BE_FALSE),
-#if !defined(__wasi__)
+#if !defined(PHP_WASI)
 	F1("stream_socket_client", MAY_BE_RESOURCE|MAY_BE_FALSE),
 #endif
-#if !defined(__wasi__)
+#if !defined(PHP_WASI)
 	F1("stream_socket_server", MAY_BE_RESOURCE|MAY_BE_FALSE),
 #endif
-#if !defined(__wasi__)
+#if !defined(PHP_WASI)
 	F1("stream_socket_accept", MAY_BE_RESOURCE|MAY_BE_FALSE),
 #endif
-#if !defined(__wasi__)
+#if !defined(PHP_WASI)
 	F1("stream_socket_recvfrom", MAY_BE_STRING|MAY_BE_FALSE),
 #endif
-#if !defined(__wasi__) && defined(HAVE_SOCKETPAIR)
+#if !defined(PHP_WASI) && defined(HAVE_SOCKETPAIR)
 	F1("stream_socket_pair", MAY_BE_ARRAY|MAY_BE_ARRAY_KEY_LONG|MAY_BE_ARRAY_OF_RESOURCE|MAY_BE_FALSE),
 #endif
 	F1("stream_get_contents", MAY_BE_STRING|MAY_BE_FALSE),

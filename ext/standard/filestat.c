@@ -271,7 +271,7 @@ PHP_FUNCTION(disk_free_space)
 }
 /* }}} */
 
-#if !defined(PHP_WIN32) && !defined(__wasi__)
+#if !defined(PHP_WIN32) && !defined(PHP_WASI)
 PHPAPI zend_result php_get_gid_by_name(const char *name, gid_t *gid)
 {
 #if defined(ZTS) && defined(HAVE_GETGRNAM_R) && defined(_SC_GETGR_R_SIZE_MAX)
@@ -303,7 +303,7 @@ PHPAPI zend_result php_get_gid_by_name(const char *name, gid_t *gid)
 }
 #endif
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 static void php_do_chgrp(INTERNAL_FUNCTION_PARAMETERS, int do_lchgrp) /* {{{ */
 {
 	char *filename;
@@ -381,15 +381,15 @@ static void php_do_chgrp(INTERNAL_FUNCTION_PARAMETERS, int do_lchgrp) /* {{{ */
 #endif
 }
 /* }}} */
-#endif // __wasi__
+#endif // PHP_WASI
 
 /* {{{ Change file group */
-#ifndef __wasi__
+#ifndef PHP_WASI
 PHP_FUNCTION(chgrp)
 {
 	php_do_chgrp(INTERNAL_FUNCTION_PARAM_PASSTHRU, 0);
 }
-#endif // __wasi__
+#endif // PHP_WASI
 /* }}} */
 
 /* {{{ Change symlink group */
@@ -401,7 +401,7 @@ PHP_FUNCTION(lchgrp)
 #endif
 /* }}} */
 
-#ifdef __wasi__
+#ifdef PHP_WASI
 PHPAPI zend_result php_get_uid_by_name(const char *name, uid_t *uid) /* {{{ */
 {
   return FAILURE;
@@ -438,7 +438,7 @@ PHPAPI zend_result php_get_uid_by_name(const char *name, uid_t *uid) /* {{{ */
 		return SUCCESS;
 }
 /* }}} */
-#endif // __wasi__
+#endif // PHP_WASI
 
 static void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown) /* {{{ */
 {
@@ -520,12 +520,12 @@ static void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown) /* {{{ */
 /* }}} */
 
 /* {{{ Change file owner */
-#ifndef __wasi__
+#ifndef PHP_WASI
 PHP_FUNCTION(chown)
 {
   php_do_chown(INTERNAL_FUNCTION_PARAM_PASSTHRU, 0);
 }
-#endif // __wasi__
+#endif // PHP_WASI
 
 /* {{{ Change file owner */
 #ifdef HAVE_LCHOWN
@@ -538,7 +538,7 @@ PHP_FUNCTION(lchown)
 /* }}} */
 
 /* {{{ Change file mode */
-#ifndef __wasi__
+#ifndef PHP_WASI
 PHP_FUNCTION(chmod)
 {
 	char *filename;
@@ -582,7 +582,7 @@ PHP_FUNCTION(chmod)
 	RETURN_TRUE;
 }
 /* }}} */
-#endif // __wasi__
+#endif // PHP_WASI
 
 #ifdef HAVE_UTIME
 /* {{{ Set modification time of file */
@@ -834,7 +834,7 @@ PHPAPI void php_stat(zend_string *filename, int type, zval *return_value)
 
 	stat_sb = &ssb.sb;
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 	if (type >= FS_IS_W && type <= FS_IS_X) {
 		if(ssb.sb.st_uid==getuid()) {
 			rmask=S_IRUSR;
@@ -875,7 +875,7 @@ PHPAPI void php_stat(zend_string *filename, int type, zval *return_value)
 			}
 		}
 	}
-#endif // __wasi__
+#endif // PHP_WASI
 
 	switch (type) {
 	case FS_PERMS:
@@ -900,9 +900,9 @@ PHPAPI void php_stat(zend_string *filename, int type, zval *return_value)
 			RETURN_STRING("link");
 		}
 		switch(ssb.sb.st_mode & S_IFMT) {
-#ifndef __wasi__
+#ifndef PHP_WASI
 		case S_IFIFO: RETURN_STRING("fifo");
-#endif // __wasi__
+#endif // PHP_WASI
 		case S_IFCHR: RETURN_STRING("char");
 		case S_IFDIR: RETURN_STRING("dir");
 		case S_IFBLK: RETURN_STRING("block");

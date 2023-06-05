@@ -739,7 +739,7 @@ const CREDITS_ALL = UNKNOWN;
 
 /* error levels */
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 /**
  * system unusable
  * @var int
@@ -2109,7 +2109,7 @@ function strptime(string $timestamp, string $format): array|false {}
 
 /* dns.c */
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 
 #ifdef HAVE_GETHOSTNAME
 /** @refcount 1 */
@@ -2184,7 +2184,7 @@ function md5_file(string $filename, bool $binary = false): string|false {}
 
 /* pageinfo.c */
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 function getmyuid(): int|false {}
 
 function getmygid(): int|false {}
@@ -2692,7 +2692,7 @@ function proc_nice(int $priority): bool {}
 /* file.c */
 
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 /**
  * @param resource $stream
  * @param int $would_block
@@ -2905,7 +2905,7 @@ function stat(string $filename): array|false {}
  */
 function lstat(string $filename): array|false {}
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 function chown(string $filename, string|int $user): bool {}
 
 function chgrp(string $filename, string|int $group): bool {}
@@ -2917,7 +2917,7 @@ function lchown(string $filename, string|int $user): bool {}
 function lchgrp(string $filename, string|int $group): bool {}
 #endif
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 function chmod(string $filename, int $permissions): bool {}
 #endif
 
@@ -3070,7 +3070,7 @@ function link(string $target, string $link): bool {}
 
 /* mail.c */
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 function mail(string $to, string $subject, string $message, array|string $additional_headers = [], string $additional_params = ""): bool {}
 #endif
 
@@ -3372,7 +3372,7 @@ function stream_filter_append($stream, string $filter_name, int $mode = 0, mixed
 /** @param resource $stream_filter */
 function stream_filter_remove($stream_filter): bool {}
 
-#ifndef __wasi__
+#ifndef PHP_WASI
 /**
  * @param int $error_code
  * @param string $error_message

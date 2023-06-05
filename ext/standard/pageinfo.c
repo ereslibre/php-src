@@ -35,7 +35,7 @@
 #define getgroups(a, b) 0
 #define getgid() 1
 #define getuid() 1
-#elif defined(__wasi__)
+#elif defined(PHP_WASI)
 #define getgid() 1
 #define getuid() 1
 #endif
