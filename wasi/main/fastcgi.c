@@ -75,3 +75,7 @@ int fcgi_read(fcgi_request *req, char *str, int len) {
 int fcgi_write(fcgi_request *req, fcgi_request_type type, const char *str, int len) {
 	return 0;
 }
+
+int fcgi_flush(fcgi_request *req, int end) {
+	return 0;
+}
