@@ -1184,6 +1184,7 @@ ZEND_COLD void zenderror(const char *error) /* {{{ */
 #ifndef PHP_WASI
 ZEND_API ZEND_COLD ZEND_NORETURN void _zend_bailout(const char *filename, uint32_t lineno) /* {{{ */
 {
+
 	if (!EG(bailout)) {
 		zend_output_debug_string(1, "%s(%d) : Bailed out without a bailout address!", filename, lineno);
 		exit(-1);

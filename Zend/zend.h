@@ -76,7 +76,10 @@ TSRMLS_MAIN_CACHE_EXTERN()
 ZEND_TSRMLS_CACHE_EXTERN()
 #endif
 
+#undef PHP_WASI
+#ifdef __wasi__
 #define PHP_WASI __wasi__
+#endif
 
 struct _zend_serialize_data;
 struct _zend_unserialize_data;

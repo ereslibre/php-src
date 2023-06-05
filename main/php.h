@@ -51,7 +51,10 @@
 # define PHP_OS_FAMILY			"Unknown"
 #endif
 
+#undef PHP_WASI
+#ifdef __wasi__
 #define PHP_WASI __wasi__
+#endif
 
 /* PHP's DEBUG value must match Zend's ZEND_DEBUG value */
 #undef PHP_DEBUG
