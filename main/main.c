@@ -1191,7 +1191,7 @@ static void clear_last_error(void) {
 	}
 }
 
-#if ZEND_DEBUG
+#if ZEND_DEBUG && !defined(PHP_WASI)
 /* {{{ report_zend_debug_error_notify_cb */
 static void report_zend_debug_error_notify_cb(int type, zend_string *error_filename, uint32_t error_lineno, zend_string *message)
 {
