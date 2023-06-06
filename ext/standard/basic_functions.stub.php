@@ -2184,11 +2184,9 @@ function md5_file(string $filename, bool $binary = false): string|false {}
 
 /* pageinfo.c */
 
-#ifndef PHP_WASI
 function getmyuid(): int|false {}
 
 function getmygid(): int|false {}
-#endif
 
 function getmypid(): int|false {}
 
@@ -2691,14 +2689,11 @@ function proc_nice(int $priority): bool {}
 
 /* file.c */
 
-
-#ifndef PHP_WASI
 /**
  * @param resource $stream
  * @param int $would_block
  */
 function flock($stream, int $operation, &$would_block = null): bool {}
-#endif
 
 /**
  * @return array<string, string>|false
@@ -2905,11 +2900,9 @@ function stat(string $filename): array|false {}
  */
 function lstat(string $filename): array|false {}
 
-#ifndef PHP_WASI
 function chown(string $filename, string|int $user): bool {}
 
 function chgrp(string $filename, string|int $group): bool {}
-#endif
 
 #ifdef HAVE_LCHOWN
 function lchown(string $filename, string|int $user): bool {}
@@ -2917,9 +2910,7 @@ function lchown(string $filename, string|int $user): bool {}
 function lchgrp(string $filename, string|int $group): bool {}
 #endif
 
-#ifndef PHP_WASI
 function chmod(string $filename, int $permissions): bool {}
-#endif
 
 #ifdef HAVE_UTIME
 function touch(string $filename, ?int $mtime = null, ?int $atime = null): bool {}
@@ -3070,9 +3061,7 @@ function link(string $target, string $link): bool {}
 
 /* mail.c */
 
-#ifndef PHP_WASI
 function mail(string $to, string $subject, string $message, array|string $additional_headers = [], string $additional_params = ""): bool {}
-#endif
 
 /* math.c */
 
@@ -3372,7 +3361,6 @@ function stream_filter_append($stream, string $filter_name, int $mode = 0, mixed
 /** @param resource $stream_filter */
 function stream_filter_remove($stream_filter): bool {}
 
-#ifndef PHP_WASI
 /**
  * @param int $error_code
  * @param string $error_message
@@ -3429,7 +3417,6 @@ function stream_socket_shutdown($stream, int $mode): bool {}
  * @refcount 1
  */
 function stream_socket_pair(int $domain, int $type, int $protocol): array|false {}
-#endif
 #endif
 
 /**

@@ -14,15 +14,19 @@
 
 #include "php.h"
 
-/* {{{ Execute a command and open either a read or a write pipe to it */
-PHP_FUNCTION(popen) /* {{{ */
+PHPAPI void php_do_chgrp(INTERNAL_FUNCTION_PARAMETERS, int do_lchgrp) /* {{{ */
 {
-  RETURN_FALSE;
+	RETURN_FALSE;
 }
 /* }}} */
 
-/* {{{ Return or change the umask */
-PHP_FUNCTION(umask) /* {{{ */
+PHPAPI void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown) /* {{{ */
+{
+	RETURN_FALSE;
+}
+/* }}} */
+
+PHPAPI void php_do_chmod(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 {
 	RETURN_FALSE;
 }

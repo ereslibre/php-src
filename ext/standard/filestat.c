@@ -384,12 +384,10 @@ static void php_do_chgrp(INTERNAL_FUNCTION_PARAMETERS, int do_lchgrp) /* {{{ */
 #endif // PHP_WASI
 
 /* {{{ Change file group */
-#ifndef PHP_WASI
 PHP_FUNCTION(chgrp)
 {
 	php_do_chgrp(INTERNAL_FUNCTION_PARAM_PASSTHRU, 0);
 }
-#endif // PHP_WASI
 /* }}} */
 
 /* {{{ Change symlink group */
@@ -440,6 +438,7 @@ PHPAPI zend_result php_get_uid_by_name(const char *name, uid_t *uid) /* {{{ */
 /* }}} */
 #endif // PHP_WASI
 
+#ifndef PHP_WASI
 static void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown) /* {{{ */
 {
 	char *filename;
@@ -518,14 +517,13 @@ static void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown) /* {{{ */
 #endif
 }
 /* }}} */
+#endif // PHP_WASI
 
 /* {{{ Change file owner */
-#ifndef PHP_WASI
 PHP_FUNCTION(chown)
 {
   php_do_chown(INTERNAL_FUNCTION_PARAM_PASSTHRU, 0);
 }
-#endif // PHP_WASI
 
 /* {{{ Change file owner */
 #ifdef HAVE_LCHOWN
@@ -538,8 +536,14 @@ PHP_FUNCTION(lchown)
 /* }}} */
 
 /* {{{ Change file mode */
-#ifndef PHP_WASI
 PHP_FUNCTION(chmod)
+{
+	php_do_chmod(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+}
+/* }}} */
+
+#ifndef PHP_WASI
+static void php_do_chmod(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 {
 	char *filename;
 	size_t filename_len;
@@ -581,7 +585,6 @@ PHP_FUNCTION(chmod)
 	}
 	RETURN_TRUE;
 }
-/* }}} */
 #endif // PHP_WASI
 
 #ifdef HAVE_UTIME

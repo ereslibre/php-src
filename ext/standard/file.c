@@ -792,9 +792,16 @@ PHPAPI PHP_FUNCTION(fclose)
 }
 /* }}} */
 
-#ifndef PHP_WASI
 /* {{{ Execute a command and open either a read or a write pipe to it */
 PHP_FUNCTION(popen) /* {{{ */
+{
+	php_popen(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+}
+/* }}} */
+
+#ifndef PHP_WASI
+
+static void php_popen(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 {
 	char *command, *mode;
 	size_t command_len, mode_len;
@@ -846,7 +853,7 @@ PHP_FUNCTION(popen) /* {{{ */
 
 	efree(posix_mode);
 }
-/* }}} */
+
 #endif // PHP_WASI
 
 /* {{{ Close a file pointer opened by popen() */
@@ -1225,8 +1232,15 @@ PHP_FUNCTION(readfile)
 /* }}} */
 
 /* {{{ Return or change the umask */
-#ifndef PHP_WASI
 PHP_FUNCTION(umask) /* {{{ */
+{
+	php_umask(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+}
+/* }}} */
+
+#ifndef PHP_WASI
+
+static void php_umask(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 {
 	zend_long mask = 0;
 	bool mask_is_null = 1;
@@ -1252,6 +1266,7 @@ PHP_FUNCTION(umask) /* {{{ */
 	RETURN_LONG(oldumask);
 }
 /* }}} */
+
 #endif // PHP_WASI
 
 /* {{{ Output all remaining data from a file pointer */

@@ -10,47 +10,13 @@
    | obtain it through the world-wide-web, please send a note to          |
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
- */
+   | Author: Sascha Schumann <sascha@schumann.cx>                         |
+   +----------------------------------------------------------------------+
+*/
 
 #include "php.h"
 
-PHP_MINIT_FUNCTION(exec)
+PHPAPI int php_mail(const char *to, const char *subject, const char *message, const char *headers, const char *extra_cmd)
 {
-	return SUCCESS;
-}
-
-PHP_FUNCTION(exec)
-{
-	RETURN_FALSE;
-}
-
-PHP_FUNCTION(system)
-{
-	RETURN_FALSE;
-}
-
-PHP_FUNCTION(passthru)
-{
-	RETURN_FALSE;
-}
-
-PHP_FUNCTION(escapeshellarg)
-{
-	RETURN_FALSE;
-}
-
-PHP_FUNCTION(escapeshellcmd)
-{
-	RETURN_FALSE;
-}
-
-PHP_FUNCTION(shell_exec)
-{
-	RETURN_FALSE;
-}
-
-PHPAPI int php_exec(int type, const char *cmd, zval *array, zval *return_value)
-{
-	RETVAL_FALSE;
-  return -1;
+	return 0;
 }

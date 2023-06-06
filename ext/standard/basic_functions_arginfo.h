@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: df974e106bd78228483cdee25cf7c7674b359272 */
+ * Stub hash: 3ac35fd4af803d1fd3796c2c36ea61f2bff040ae */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, seconds, IS_LONG, 0)
@@ -692,14 +692,9 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_md5_file, 0, 1, MAY_BE_STRING|MA
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, binary, _IS_BOOL, 0, "false")
 ZEND_END_ARG_INFO()
 
-#if !defined(PHP_WASI)
-ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_getmyuid, 0, 0, MAY_BE_LONG|MAY_BE_FALSE)
-ZEND_END_ARG_INFO()
-#endif
+#define arginfo_getmyuid arginfo_ob_get_length
 
-#if !defined(PHP_WASI)
-#define arginfo_getmygid arginfo_getmyuid
-#endif
+#define arginfo_getmygid arginfo_ob_get_length
 
 #define arginfo_getmypid arginfo_ob_get_length
 
@@ -1186,13 +1181,11 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_proc_nice, 0, 1, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 #endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_flock, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_INFO(0, stream)
 	ZEND_ARG_TYPE_INFO(0, operation, IS_LONG, 0)
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, would_block, "null")
 ZEND_END_ARG_INFO()
-#endif
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_get_meta_tags, 0, 1, MAY_BE_ARRAY|MAY_BE_FALSE)
 	ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)
@@ -1419,19 +1412,15 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_lstat arginfo_stat
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_chown, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)
 	ZEND_ARG_TYPE_MASK(0, user, MAY_BE_STRING|MAY_BE_LONG, NULL)
 ZEND_END_ARG_INFO()
-#endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_chgrp, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)
 	ZEND_ARG_TYPE_MASK(0, group, MAY_BE_STRING|MAY_BE_LONG, NULL)
 ZEND_END_ARG_INFO()
-#endif
 
 #if defined(HAVE_LCHOWN)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_lchown, 0, 2, _IS_BOOL, 0)
@@ -1447,12 +1436,10 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_lchgrp, 0, 2, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
 #endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_chmod, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, filename, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, permissions, IS_LONG, 0)
 ZEND_END_ARG_INFO()
-#endif
 
 #if defined(HAVE_UTIME)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_touch, 0, 1, _IS_BOOL, 0)
@@ -1610,7 +1597,6 @@ ZEND_END_ARG_INFO()
 #define arginfo_link arginfo_symlink
 #endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_mail, 0, 3, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO(0, to, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO(0, subject, IS_STRING, 0)
@@ -1618,7 +1604,6 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_mail, 0, 3, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_MASK(0, additional_headers, MAY_BE_ARRAY|MAY_BE_STRING, "[]")
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, additional_params, IS_STRING, 0, "\"\"")
 ZEND_END_ARG_INFO()
-#endif
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_abs, 0, 1, MAY_BE_LONG|MAY_BE_DOUBLE)
 	ZEND_ARG_TYPE_MASK(0, num, MAY_BE_LONG|MAY_BE_DOUBLE, NULL)
@@ -1891,7 +1876,6 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_stream_filter_remove, 0, 1, _IS_
 	ZEND_ARG_INFO(0, stream_filter)
 ZEND_END_ARG_INFO()
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_client, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO(0, address, IS_STRING, 0)
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, error_code, "null")
@@ -1900,9 +1884,7 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_client, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, "STREAM_CLIENT_CONNECT")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(0, context, "null")
 ZEND_END_ARG_INFO()
-#endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_server, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO(0, address, IS_STRING, 0)
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, error_code, "null")
@@ -1910,58 +1892,47 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_server, 0, 0, 1)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, "STREAM_SERVER_BIND | STREAM_SERVER_LISTEN")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(0, context, "null")
 ZEND_END_ARG_INFO()
-#endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_stream_socket_accept, 0, 0, 1)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, timeout, IS_DOUBLE, 1, "null")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, peer_name, "null")
 ZEND_END_ARG_INFO()
-#endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_get_name, 0, 2, MAY_BE_STRING|MAY_BE_FALSE)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO(0, remote, _IS_BOOL, 0)
 ZEND_END_ARG_INFO()
-#endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_recvfrom, 0, 2, MAY_BE_STRING|MAY_BE_FALSE)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO(0, length, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, "0")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(1, address, "null")
 ZEND_END_ARG_INFO()
-#endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_sendto, 0, 2, MAY_BE_LONG|MAY_BE_FALSE)
 	ZEND_ARG_INFO(0, socket)
 	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, flags, IS_LONG, 0, "0")
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, address, IS_STRING, 0, "\"\"")
 ZEND_END_ARG_INFO()
-#endif
 
-#if !defined(PHP_WASI)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_enable_crypto, 0, 2, MAY_BE_LONG|MAY_BE_BOOL)
 	ZEND_ARG_INFO(0, stream)
 	ZEND_ARG_TYPE_INFO(0, enable, _IS_BOOL, 0)
 	ZEND_ARG_TYPE_INFO_WITH_DEFAULT_VALUE(0, crypto_method, IS_LONG, 1, "null")
 	ZEND_ARG_INFO_WITH_DEFAULT_VALUE(0, session_stream, "null")
 ZEND_END_ARG_INFO()
-#endif
 
-#if !defined(PHP_WASI) && defined(HAVE_SHUTDOWN)
+#if defined(HAVE_SHUTDOWN)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_stream_socket_shutdown, 0, 2, _IS_BOOL, 0)
 	ZEND_ARG_INFO(0, stream)
 	ZEND_ARG_TYPE_INFO(0, mode, IS_LONG, 0)
 ZEND_END_ARG_INFO()
 #endif
 
-#if !defined(PHP_WASI) && defined(HAVE_SOCKETPAIR)
+#if defined(HAVE_SOCKETPAIR)
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_MASK_EX(arginfo_stream_socket_pair, 0, 3, MAY_BE_ARRAY|MAY_BE_FALSE)
 	ZEND_ARG_TYPE_INFO(0, domain, IS_LONG, 0)
 	ZEND_ARG_TYPE_INFO(0, type, IS_LONG, 0)
@@ -2434,12 +2405,8 @@ ZEND_FUNCTION(ftok);
 ZEND_FUNCTION(hrtime);
 ZEND_FUNCTION(md5);
 ZEND_FUNCTION(md5_file);
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(getmyuid);
-#endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(getmygid);
-#endif
 ZEND_FUNCTION(getmypid);
 ZEND_FUNCTION(getmyinode);
 ZEND_FUNCTION(getlastmod);
@@ -2568,9 +2535,7 @@ ZEND_FUNCTION(shell_exec);
 #if defined(HAVE_NICE)
 ZEND_FUNCTION(proc_nice);
 #endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(flock);
-#endif
 ZEND_FUNCTION(get_meta_tags);
 ZEND_FUNCTION(pclose);
 ZEND_FUNCTION(popen);
@@ -2628,21 +2593,15 @@ ZEND_FUNCTION(is_dir);
 ZEND_FUNCTION(is_link);
 ZEND_FUNCTION(stat);
 ZEND_FUNCTION(lstat);
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(chown);
-#endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(chgrp);
-#endif
 #if defined(HAVE_LCHOWN)
 ZEND_FUNCTION(lchown);
 #endif
 #if defined(HAVE_LCHOWN)
 ZEND_FUNCTION(lchgrp);
 #endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(chmod);
-#endif
 #if defined(HAVE_UTIME)
 ZEND_FUNCTION(touch);
 #endif
@@ -2686,9 +2645,7 @@ ZEND_FUNCTION(symlink);
 #if (defined(HAVE_SYMLINK) || defined(PHP_WIN32))
 ZEND_FUNCTION(link);
 #endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(mail);
-#endif
 ZEND_FUNCTION(abs);
 ZEND_FUNCTION(ceil);
 ZEND_FUNCTION(floor);
@@ -2773,31 +2730,17 @@ ZEND_FUNCTION(stream_context_set_default);
 ZEND_FUNCTION(stream_filter_prepend);
 ZEND_FUNCTION(stream_filter_append);
 ZEND_FUNCTION(stream_filter_remove);
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(stream_socket_client);
-#endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(stream_socket_server);
-#endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(stream_socket_accept);
-#endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(stream_socket_get_name);
-#endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(stream_socket_recvfrom);
-#endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(stream_socket_sendto);
-#endif
-#if !defined(PHP_WASI)
 ZEND_FUNCTION(stream_socket_enable_crypto);
-#endif
-#if !defined(PHP_WASI) && defined(HAVE_SHUTDOWN)
+#if defined(HAVE_SHUTDOWN)
 ZEND_FUNCTION(stream_socket_shutdown);
 #endif
-#if !defined(PHP_WASI) && defined(HAVE_SOCKETPAIR)
+#if defined(HAVE_SOCKETPAIR)
 ZEND_FUNCTION(stream_socket_pair);
 #endif
 ZEND_FUNCTION(stream_copy_to_stream);
@@ -3100,12 +3043,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(hrtime, arginfo_hrtime)
 	ZEND_FE(md5, arginfo_md5)
 	ZEND_FE(md5_file, arginfo_md5_file)
-#if !defined(PHP_WASI)
 	ZEND_FE(getmyuid, arginfo_getmyuid)
-#endif
-#if !defined(PHP_WASI)
 	ZEND_FE(getmygid, arginfo_getmygid)
-#endif
 	ZEND_FE(getmypid, arginfo_getmypid)
 	ZEND_FE(getmyinode, arginfo_getmyinode)
 	ZEND_FE(getlastmod, arginfo_getlastmod)
@@ -3237,9 +3176,7 @@ static const zend_function_entry ext_functions[] = {
 #if defined(HAVE_NICE)
 	ZEND_FE(proc_nice, arginfo_proc_nice)
 #endif
-#if !defined(PHP_WASI)
 	ZEND_FE(flock, arginfo_flock)
-#endif
 	ZEND_FE(get_meta_tags, arginfo_get_meta_tags)
 	ZEND_FE(pclose, arginfo_pclose)
 	ZEND_FE(popen, arginfo_popen)
@@ -3299,21 +3236,15 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(is_link, arginfo_is_link)
 	ZEND_FE(stat, arginfo_stat)
 	ZEND_FE(lstat, arginfo_lstat)
-#if !defined(PHP_WASI)
 	ZEND_FE(chown, arginfo_chown)
-#endif
-#if !defined(PHP_WASI)
 	ZEND_FE(chgrp, arginfo_chgrp)
-#endif
 #if defined(HAVE_LCHOWN)
 	ZEND_FE(lchown, arginfo_lchown)
 #endif
 #if defined(HAVE_LCHOWN)
 	ZEND_FE(lchgrp, arginfo_lchgrp)
 #endif
-#if !defined(PHP_WASI)
 	ZEND_FE(chmod, arginfo_chmod)
-#endif
 #if defined(HAVE_UTIME)
 	ZEND_FE(touch, arginfo_touch)
 #endif
@@ -3358,9 +3289,7 @@ static const zend_function_entry ext_functions[] = {
 #if (defined(HAVE_SYMLINK) || defined(PHP_WIN32))
 	ZEND_FE(link, arginfo_link)
 #endif
-#if !defined(PHP_WASI)
 	ZEND_FE(mail, arginfo_mail)
-#endif
 	ZEND_SUPPORTS_COMPILE_TIME_EVAL_FE(abs, arginfo_abs)
 	ZEND_SUPPORTS_COMPILE_TIME_EVAL_FE(ceil, arginfo_ceil)
 	ZEND_SUPPORTS_COMPILE_TIME_EVAL_FE(floor, arginfo_floor)
@@ -3445,31 +3374,17 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(stream_filter_prepend, arginfo_stream_filter_prepend)
 	ZEND_FE(stream_filter_append, arginfo_stream_filter_append)
 	ZEND_FE(stream_filter_remove, arginfo_stream_filter_remove)
-#if !defined(PHP_WASI)
 	ZEND_FE(stream_socket_client, arginfo_stream_socket_client)
-#endif
-#if !defined(PHP_WASI)
 	ZEND_FE(stream_socket_server, arginfo_stream_socket_server)
-#endif
-#if !defined(PHP_WASI)
 	ZEND_FE(stream_socket_accept, arginfo_stream_socket_accept)
-#endif
-#if !defined(PHP_WASI)
 	ZEND_FE(stream_socket_get_name, arginfo_stream_socket_get_name)
-#endif
-#if !defined(PHP_WASI)
 	ZEND_FE(stream_socket_recvfrom, arginfo_stream_socket_recvfrom)
-#endif
-#if !defined(PHP_WASI)
 	ZEND_FE(stream_socket_sendto, arginfo_stream_socket_sendto)
-#endif
-#if !defined(PHP_WASI)
 	ZEND_FE(stream_socket_enable_crypto, arginfo_stream_socket_enable_crypto)
-#endif
-#if !defined(PHP_WASI) && defined(HAVE_SHUTDOWN)
+#if defined(HAVE_SHUTDOWN)
 	ZEND_FE(stream_socket_shutdown, arginfo_stream_socket_shutdown)
 #endif
-#if !defined(PHP_WASI) && defined(HAVE_SOCKETPAIR)
+#if defined(HAVE_SOCKETPAIR)
 	ZEND_FE(stream_socket_pair, arginfo_stream_socket_pair)
 #endif
 	ZEND_FE(stream_copy_to_stream, arginfo_stream_copy_to_stream)
