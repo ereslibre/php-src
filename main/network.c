@@ -52,7 +52,7 @@
 #endif
 
 
-#ifndef PHP_WIN32
+#if !defined(PHP_WIN32)
 #include <netinet/in.h>
 #include <netdb.h>
 #if HAVE_ARPA_INET_H
