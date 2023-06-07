@@ -1776,7 +1776,7 @@ PHP_ADD_SOURCES(Zend, \
     , -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
 
 if test "$WASI" = "yes"; then
-  PHP_ADD_SOURCES(wasi/Zend, zend.c zend_fibers.c zend_virtual_cwd.c,)
+  PHP_ADD_SOURCES(Zend, zend_wasi.c zend_fibers_wasi.c zend_virtual_cwd_wasi.c,)
 fi
 
 PHP_ADD_BUILD_DIR(main main/streams)
