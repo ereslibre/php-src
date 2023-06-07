@@ -792,13 +792,6 @@ PHPAPI PHP_FUNCTION(fclose)
 }
 /* }}} */
 
-/* {{{ Execute a command and open either a read or a write pipe to it */
-PHP_FUNCTION(popen) /* {{{ */
-{
-	php_popen(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-}
-/* }}} */
-
 #ifndef PHP_WASI
 
 static void php_popen(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
@@ -854,7 +847,18 @@ static void php_popen(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 	efree(posix_mode);
 }
 
+#else
+
+void php_popen(INTERNAL_FUNCTION_PARAMETERS);
+
 #endif // PHP_WASI
+
+/* {{{ Execute a command and open either a read or a write pipe to it */
+PHP_FUNCTION(popen) /* {{{ */
+{
+  php_popen(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+}
+/* }}} */
 
 /* {{{ Close a file pointer opened by popen() */
 PHP_FUNCTION(pclose)
@@ -1231,13 +1235,6 @@ PHP_FUNCTION(readfile)
 }
 /* }}} */
 
-/* {{{ Return or change the umask */
-PHP_FUNCTION(umask) /* {{{ */
-{
-	php_umask(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-}
-/* }}} */
-
 #ifndef PHP_WASI
 
 static void php_umask(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
@@ -1267,7 +1264,18 @@ static void php_umask(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 }
 /* }}} */
 
+#else
+
+void php_umask(INTERNAL_FUNCTION_PARAMETERS);
+
 #endif // PHP_WASI
+
+/* {{{ Return or change the umask */
+PHP_FUNCTION(umask) /* {{{ */
+{
+	php_umask(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+}
+/* }}} */
 
 /* {{{ Output all remaining data from a file pointer */
 PHPAPI PHP_FUNCTION(fpassthru)

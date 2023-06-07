@@ -205,6 +205,10 @@ err:
 }
 /* }}} */
 
+#else
+
+int php_exec(int type, const char *cmd, zval *array, zval *return_value);
+
 #endif // PHP_WASI
 
 static void php_exec_ex(INTERNAL_FUNCTION_PARAMETERS, int mode) /* {{{ */
@@ -554,6 +558,10 @@ static void php_shell_exec_ex(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 	}
  }
 /* }}} */
+
+#else
+
+void php_shell_exec_ex(INTERNAL_FUNCTION_PARAMETERS);
 
 #endif // PHP_WASI
 

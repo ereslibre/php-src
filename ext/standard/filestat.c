@@ -381,6 +381,10 @@ static void php_do_chgrp(INTERNAL_FUNCTION_PARAMETERS, int do_lchgrp) /* {{{ */
 #endif
 }
 /* }}} */
+#else
+
+void php_do_chgrp(INTERNAL_FUNCTION_PARAMETERS, int do_lchgrp);
+
 #endif // PHP_WASI
 
 /* {{{ Change file group */
@@ -517,6 +521,12 @@ static void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown) /* {{{ */
 #endif
 }
 /* }}} */
+
+#else
+
+void php_do_chgrp(INTERNAL_FUNCTION_PARAMETERS, int do_lchgrp);
+void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown);
+
 #endif // PHP_WASI
 
 /* {{{ Change file owner */
@@ -533,13 +543,6 @@ PHP_FUNCTION(lchown)
 	php_do_chown(INTERNAL_FUNCTION_PARAM_PASSTHRU, 1);
 }
 #endif
-/* }}} */
-
-/* {{{ Change file mode */
-PHP_FUNCTION(chmod)
-{
-	php_do_chmod(INTERNAL_FUNCTION_PARAM_PASSTHRU);
-}
 /* }}} */
 
 #ifndef PHP_WASI
@@ -585,7 +588,16 @@ static void php_do_chmod(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 	}
 	RETURN_TRUE;
 }
+#else
+void php_do_chmod(INTERNAL_FUNCTION_PARAMETERS);
 #endif // PHP_WASI
+
+/* {{{ Change file mode */
+PHP_FUNCTION(chmod)
+{
+	php_do_chmod(INTERNAL_FUNCTION_PARAM_PASSTHRU);
+}
+/* }}} */
 
 #ifdef HAVE_UTIME
 /* {{{ Set modification time of file */
