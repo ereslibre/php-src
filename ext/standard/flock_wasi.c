@@ -15,9 +15,8 @@
 */
 
 #include "php.h"
-#include <errno.h>
 
 PHPAPI int flock(int fd, int operation)
 {
-	return 0;
+	return -1;
 }

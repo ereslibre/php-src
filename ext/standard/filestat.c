@@ -524,7 +524,6 @@ static void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown) /* {{{ */
 
 #else
 
-void php_do_chgrp(INTERNAL_FUNCTION_PARAMETERS, int do_lchgrp);
 void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown);
 
 #endif // PHP_WASI
@@ -532,8 +531,9 @@ void php_do_chown(INTERNAL_FUNCTION_PARAMETERS, int do_lchown);
 /* {{{ Change file owner */
 PHP_FUNCTION(chown)
 {
-  php_do_chown(INTERNAL_FUNCTION_PARAM_PASSTHRU, 0);
+	php_do_chown(INTERNAL_FUNCTION_PARAM_PASSTHRU, 0);
 }
+/* }}} */
 
 /* {{{ Change file owner */
 #ifdef HAVE_LCHOWN
@@ -589,7 +589,9 @@ static void php_do_chmod(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 	RETURN_TRUE;
 }
 #else
+
 void php_do_chmod(INTERNAL_FUNCTION_PARAMETERS);
+
 #endif // PHP_WASI
 
 /* {{{ Change file mode */

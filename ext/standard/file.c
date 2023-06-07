@@ -846,6 +846,7 @@ static void php_popen(INTERNAL_FUNCTION_PARAMETERS) /* {{{ */
 
 	efree(posix_mode);
 }
+/* }}} */
 
 #else
 

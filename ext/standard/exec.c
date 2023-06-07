@@ -113,7 +113,7 @@ static size_t handle_line(int type, zval *array, char *buf, size_t bufl) {
  * If type==3, output will be printed binary, no lines will be saved or returned (passthru)
  *
  */
-PHPAPI int php_exec(int type, const char *cmd, zval *array, zval *return_value) /* {{{ */
+PHPAPI int php_exec(int type, const char *cmd, zval *array, zval *return_value)
 {
 	FILE *fp;
 	char *buf;

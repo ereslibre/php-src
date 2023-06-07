@@ -148,12 +148,12 @@ PHP_FUNCTION(gethostbyaddr)
 {
 	char *addr;
 	size_t addr_len;
+	zend_string *hostname;
 
 	ZEND_PARSE_PARAMETERS_START(1, 1)
 		Z_PARAM_PATH(addr, addr_len)
 	ZEND_PARSE_PARAMETERS_END();
 
-	zend_string *hostname;
 	hostname = php_gethostbyaddr(addr);
 
 	if (hostname == NULL) {
@@ -214,6 +214,7 @@ static zend_string *php_gethostbyaddr(char *ip)
 	return zend_string_init(hp->h_name, strlen(hp->h_name), 0);
 #endif
 }
+/* }}} */
 
 /* {{{ Get the IP address corresponding to a given Internet host name */
 PHP_FUNCTION(gethostbyname)
@@ -236,7 +237,7 @@ PHP_FUNCTION(gethostbyname)
 /* }}} */
 
 /* {{{ Return a list of IP addresses that a given hostname resolves to. */
-PHP_FUNCTION(gethostbynamel)  /* {{{ */
+PHP_FUNCTION(gethostbynamel)
 {
 	char *hostname;
 	size_t hostname_len;
@@ -283,7 +284,7 @@ PHP_FUNCTION(gethostbynamel)  /* {{{ */
 /* }}} */
 
 /* {{{ php_gethostbyname */
-static zend_string *php_gethostbyname(char *name) /* {{{ */
+static zend_string *php_gethostbyname(char *name)
 {
 	struct hostent *hp;
 	struct in_addr *h_addr_0; /* Don't call this h_addr, it's a macro! */

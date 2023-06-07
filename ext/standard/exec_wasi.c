@@ -16,8 +16,7 @@
 
 PHPAPI int php_exec(int type, const char *cmd, zval *array, zval *return_value) /* {{{ */
 {
-	RETVAL_FALSE;
-  return -1;
+	return -1;
 }
 /* }}} */
 
