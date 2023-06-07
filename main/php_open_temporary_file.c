@@ -199,11 +199,6 @@ static int php_do_open_temporary_file(const char *path, const char *pfx, zend_st
 	efree(new_state.cwd);
 	return fd;
 }
-#else
-static int php_do_open_temporary_file(const char *path, const char *pfx, zend_string **opened_path_p)
-{
-  return -1;
-}
 #endif // PHP_WASI
 /* }}} */
 

@@ -52,7 +52,7 @@
 #endif
 
 
-#if !defined(PHP_WIN32)
+#ifndef PHP_WIN32
 #include <netinet/in.h>
 #include <netdb.h>
 #if HAVE_ARPA_INET_H
@@ -602,6 +602,7 @@ out:
 	return ret;
 }
 
+
 PHPAPI void php_network_populate_name_from_sockaddr(
 		/* input address */
 		struct sockaddr *sa, socklen_t sl,
@@ -709,6 +710,7 @@ PHPAPI int php_network_get_sock_name(php_socket_t sock,
 		return 0;
 	}
 	return -1;
+
 }
 
 

@@ -1994,7 +1994,7 @@ consult the installation file that came with this distribution, or visit \n\
 			fprintf(stderr, "Process group %d\n", pgroup);
 #endif
 
-      /* Set up handler to kill children upon exit */
+			/* Set up handler to kill children upon exit */
 			act.sa_flags = 0;
 			act.sa_handler = fastcgi_cleanup;
 			if (sigaction(SIGTERM, &act, &old_term) ||

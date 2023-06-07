@@ -79,13 +79,11 @@ zend_long php_getuid(void)
 }
 /* }}} */
 
-/* {{{ php_getgid */
 zend_long php_getgid(void)
 {
 	php_statpage();
 	return (BG(page_gid));
 }
-/* }}} */
 
 /* {{{ Get PHP script owner's UID */
 PHP_FUNCTION(getmyuid)

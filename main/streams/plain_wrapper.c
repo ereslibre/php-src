@@ -1540,6 +1540,7 @@ static int php_plain_files_metadata(php_stream_wrapper *wrapper, const char *url
 			} else {
 				uid = (uid_t)*(long *)value;
 			}
+			ret = VCWD_CHOWN(url, uid, -1);
 			break;
 		case PHP_STREAM_META_GROUP:
 		case PHP_STREAM_META_GROUP_NAME:
@@ -1552,7 +1553,6 @@ static int php_plain_files_metadata(php_stream_wrapper *wrapper, const char *url
 				gid = (gid_t)*(long *)value;
 			}
 			ret = VCWD_CHOWN(url, -1, gid);
-      return 0;
 			break;
 #endif
 #ifndef PHP_WASI

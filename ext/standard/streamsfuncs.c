@@ -48,7 +48,7 @@ static php_stream_context *decode_context_param(zval *contextresource);
 
 /* Streams based network functions */
 
-#if defined(HAVE_SOCKETPAIR)
+#ifdef HAVE_SOCKETPAIR
 /* {{{ Creates a pair of connected, indistinguishable socket streams */
 PHP_FUNCTION(stream_socket_pair)
 {
@@ -94,8 +94,8 @@ PHP_FUNCTION(stream_socket_pair)
 	add_next_index_resource(return_value, s1->res);
 	add_next_index_resource(return_value, s2->res);
 }
-#endif
 /* }}} */
+#endif
 
 /* {{{ Open a client connection to a remote address */
 PHP_FUNCTION(stream_socket_client)
@@ -1729,7 +1729,7 @@ PHP_FUNCTION(sapi_windows_vt100_support)
 }
 #endif
 
-#if defined(HAVE_SHUTDOWN)
+#ifdef HAVE_SHUTDOWN
 /* {{{ causes all or part of a full-duplex connection on the socket associated
 	with stream to be shut down.  If how is SHUT_RD,  further receptions will
 	be disallowed. If how is SHUT_WR, further transmissions will be disallowed.

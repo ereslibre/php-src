@@ -14,7 +14,7 @@
 
 #include <errno.h>
 
-int __attribute__((weak)) dup(int fildes)
+int dup(int fildes)
 {
   errno = ENOTSUP;
   return -1;

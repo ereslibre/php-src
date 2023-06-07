@@ -51,7 +51,6 @@
 # define PHP_OS_FAMILY			"Unknown"
 #endif
 
-#undef PHP_WASI
 #ifdef __wasi__
 #define PHP_WASI __wasi__
 #endif
