@@ -19,7 +19,7 @@ PHPAPI const char* php_get_temporary_directory(void)
   return NULL;
 }
 
-static int php_do_open_temporary_file(const char *path, const char *pfx, zend_string **opened_path_p)
+PHPAPI int php_do_open_temporary_file(const char *path, const char *pfx, zend_string **opened_path_p)
 {
   return -1;
 }
