@@ -19,6 +19,16 @@ PHPAPI int php_network_parse_network_address_with_port(const char *addr, zend_lo
 	return FAILURE;
 }
 
+PHPAPI int php_set_sock_blocking(php_socket_t socketd, int block)
+{
+	return FAILURE;
+}
+
+PHPAPI char *php_socket_strerror(long err, char *buf, size_t bufsize)
+{
+	return NULL;
+}
+
 PHPAPI void _php_emit_fd_setsize_warning(int max_fd)
 {
 }
