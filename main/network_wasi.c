@@ -19,7 +19,7 @@ PHPAPI int php_network_parse_network_address_with_port(const char *addr, zend_lo
 	return FAILURE;
 }
 
-PHPAPI int php_set_sock_blocking(php_socket_t socketd, int block)
+PHPAPI int php_set_sock_blocking(int socketd, int block)
 {
 	return FAILURE;
 }
