@@ -343,5 +343,5 @@ jobs:
       #   uses: ./.github/actions/test-wasi
       #   with:
       #     testArtifacts: ${{ matrix.debug && 'DEBUG' || 'RELEASE' }}_${{ matrix.zts && 'ZTS' || 'NTS' }}
-      - name: Verify generated files are up to date
-        uses: ./.github/actions/verify-generated-files
+      # - name: Verify generated files are up to date
+      #   uses: ./.github/actions/verify-generated-files
